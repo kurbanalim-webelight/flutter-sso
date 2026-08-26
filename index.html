@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flutter_sso — Engineering Docs</title>
+<style>
+  :root{
+    --ink:#171717;
+    --muted:#60646c;
+    --soft:#8a9099;
+    --paper:#ffffff;
+    --surface:#f7f7f5;
+    --surface2:#fffaf0;
+    --line:#e4e4df;
+    --yellow:#f5c518;
+    --amber:#e8a000;
+    --orange:#e07000;
+    --red:#c9362b;
+    --green:#237a45;
+    --blue:#2456a4;
+    --purple:#6646a4;
+    --code:#171923;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.62;
+  }
+  a{color:inherit}
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:4px;
+    overflow-x:auto;
+    min-height:54px;padding:0 22px;
+    background:#111;color:#bbb;border-bottom:3px solid var(--yellow);
+  }
+  nav .brand{font-weight:800;color:var(--yellow);white-space:nowrap;margin-right:14px}
+  nav a{font-size:12px;text-decoration:none;padding:17px 10px;white-space:nowrap}
+  nav a:hover{color:#fff}
+  nav a.doc{font-weight:800;color:#e8e8e8}
+  nav a.doc[aria-current="page"]{background:var(--yellow);color:#111}
+  nav .sep{flex:0 0 auto;width:1px;height:22px;background:#3a3a3a;margin:0 12px}
+  header{
+    background:linear-gradient(135deg,#f5c518 0%,#ffd968 100%);
+    border-bottom:1px solid #d9b11d;
+    padding:70px 28px 58px;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  .narrow{max-width:900px}
+  .eyebrow{
+    display:inline-block;padding:5px 9px;background:#111;color:var(--yellow);
+    font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  h1{font-size:clamp(2rem,5vw,3.7rem);line-height:1.04;margin:0;max-width:960px;letter-spacing:-.04em}
+  header p{max-width:850px;font-size:17px;color:#3f3500;margin:22px 0 0}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:26px}
+  .chip{background:#111;color:#fff;padding:8px 12px;font-size:12px;font-weight:700}
+  .chip b{color:var(--yellow)}
+  section{padding:70px 0;border-bottom:1px solid var(--line)}
+  section.alt{background:var(--surface)}
+  h2{font-size:clamp(1.55rem,3vw,2.35rem);letter-spacing:-.025em;line-height:1.16;margin:0 0 10px}
+  h3{font-size:1.12rem;margin:34px 0 10px}
+  h4{margin:0 0 7px}
+  p{color:var(--muted)}
+  strong{color:var(--ink)}
+  .bar{width:54px;height:5px;background:var(--yellow);margin:18px 0 26px}
+  .lead{font-size:1.05rem;max-width:900px}
+  .callout{
+    border-left:5px solid var(--yellow);background:#fffbec;padding:20px 22px;margin:25px 0;
+  }
+  .callout.orange{border-color:var(--orange);background:#fff5e9}
+  .callout.red{border-color:var(--red);background:#fff0ee}
+  .callout.green{border-color:var(--green);background:#eff8f2}
+  .callout.blue{border-color:var(--blue);background:#f0f5ff}
+  .callout p{margin:0;color:#303030}
+  .callout p + p{margin-top:12px}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .card{
+    border:1px solid var(--line);background:#fff;padding:22px;min-width:0;
+  }
+  .card.top-yellow{border-top:5px solid var(--yellow)}
+  .card.top-orange{border-top:5px solid var(--orange)}
+  .card.top-green{border-top:5px solid var(--green)}
+  .card.top-blue{border-top:5px solid var(--blue)}
+  .card.top-purple{border-top:5px solid var(--purple)}
+  .card.top-red{border-top:5px solid var(--red)}
+  .card .kicker{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--orange)}
+  .card h3{margin:6px 0 0}
+  .card p{font-size:14px;margin:8px 0 0}
+  .card ul.clean{margin:12px 0 0}
+  .phase-strip{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:30px 0;
+  }
+  .phase{
+    padding:24px;background:#111;color:#fff;position:relative;min-height:210px;
+  }
+  .phase:nth-child(1){border-top:6px solid var(--yellow)}
+  .phase:nth-child(2){border-top:6px solid var(--orange)}
+  .phase:nth-child(3){border-top:6px solid var(--green)}
+  .phase .num{font:800 34px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--yellow)}
+  .phase:nth-child(2) .num{color:#ffad43}
+  .phase:nth-child(3) .num{color:#79d69a}
+  .phase h3{margin:12px 0 8px;color:#fff}
+  .phase p{color:#b8b8b8;font-size:13px}
+  .phase .when{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#8f8f8f}
+  .diagram{
+    background:#fff;border:1px solid var(--line);padding:28px;margin:28px 0;overflow-x:auto;
+  }
+  .diagram-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--soft);margin-bottom:20px}
+  .diagram-note{font-size:12px;color:var(--muted);margin:16px 0 0}
+  .flow{display:flex;align-items:stretch;gap:9px;min-width:780px}
+  .node{
+    flex:1;border:1px solid var(--line);padding:14px;background:var(--surface);text-align:center;
+    display:flex;flex-direction:column;justify-content:center;min-height:92px;
+  }
+  .node b{font-size:13px}
+  .node span{font-size:11px;color:var(--muted);margin-top:5px}
+  .node.secure{background:#eff8f2;border-color:#b9dcc6}
+  .node.warn{background:#fff5e9;border-color:#f0c288}
+  .node.danger{background:#fff0ee;border-color:#f0bab4}
+  .node.dark{background:#111;color:#fff;border-color:#111}
+  .node.dark span{color:#aaa}
+  .arrow{display:flex;align-items:center;color:var(--orange);font-size:24px;font-weight:800}
+  .vertical-flow{display:flex;flex-direction:column;gap:0;margin:26px 0}
+  .vf-row{display:grid;grid-template-columns:175px 36px 1fr;align-items:stretch}
+  .vf-time{
+    background:#111;color:#fff;padding:18px;font-size:12px;font-weight:800;display:flex;align-items:center;
+  }
+  .vf-arrow{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--orange)}
+  .vf-body{padding:16px 20px;border:1px solid var(--line);background:#fff}
+  .vf-body p{margin:5px 0 0;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  .table-wrap{overflow-x:auto;margin:24px 0;border:1px solid var(--line)}
+  th{background:#111;color:var(--yellow);text-align:left;padding:13px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(odd){background:#fafaf8}
+  .must{color:var(--red);font-weight:800}
+  .ship{color:var(--green);font-weight:800}
+  .later{color:var(--blue);font-weight:800}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;background:#f1f1ec;padding:1px 5px;color:#2b2b2b}
+  td code,li code{background:#f1f1ec}
+  pre{
+    background:var(--code);color:#d8dee9;padding:24px;overflow-x:auto;
+    font-size:12px;line-height:1.7;border-top:4px solid var(--yellow);
+  }
+  pre .y{color:#f5c518}.g{color:#8bd49c}.o{color:#ffad43}.b{color:#83b5ff}.r{color:#ff8580}.m{color:#9aa0aa}
+  .filename{font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin:26px 0 8px}
+  ul.clean{list-style:none;padding:0;margin:18px 0}
+  ul.clean li{padding:9px 0 9px 22px;border-bottom:1px solid var(--line);position:relative;color:var(--muted)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li::before{content:"→";position:absolute;left:0;color:var(--orange);font-weight:800}
+  .invariant{
+    padding:17px 18px;background:#111;color:#fff;border-left:5px solid var(--yellow);margin:7px 0;
+  }
+  .invariant b{color:var(--yellow)}
+  .test{
+    display:grid;grid-template-columns:110px 1fr 160px;gap:0;border:1px solid var(--line);border-bottom:0;
+  }
+  .test:last-child{border-bottom:1px solid var(--line)}
+  .test > div{padding:14px;border-right:1px solid var(--line)}
+  .test > div:last-child{border-right:0}
+  .test .gate{font-weight:800;background:#111;color:var(--yellow)}
+  .test .pass{font-weight:800;color:var(--green)}
+  .test .fail{font-weight:800;color:var(--red)}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{font-size:11px;padding:5px 8px;background:#eee;color:#555;font-weight:700}
+  .badge.red{background:#fde5e2;color:#a92e25}
+  .badge.green{background:#e1f3e7;color:#176335}
+  .badge.blue{background:#e5edfc;color:#1d4e97}
+  .badge.orange{background:#ffeed9;color:#a95400}
+  .source{font-size:12px;color:var(--muted);margin:7px 0}
+  .nextdoc{display:flex;gap:16px;flex-wrap:wrap;margin-top:26px}
+  .nextdoc a{
+    display:block;flex:1;min-width:260px;text-decoration:none;
+    border:1px solid var(--line);border-top:5px solid var(--yellow);background:#fff;padding:22px;
+  }
+  .nextdoc a:hover{background:var(--surface2)}
+  .nextdoc .kicker{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--orange)}
+  .nextdoc b{display:block;margin-top:6px;font-size:1.05rem}
+  .nextdoc span{display:block;margin-top:6px;font-size:13px;color:var(--muted)}
+  footer{background:#111;color:#aaa;padding:35px 28px;font-size:12px}
+  footer b{color:var(--yellow)}
+  footer a{color:var(--yellow)}
+  @media(max-width:860px){
+    .grid2,.grid3,.grid4,.phase-strip{grid-template-columns:1fr}
+    .test{grid-template-columns:1fr}
+    .test>div{border-right:0;border-bottom:1px solid var(--line)}
+    .vf-row{grid-template-columns:1fr}
+    .vf-arrow{display:none}
+    .wrap{padding:0 18px}
+  }
+
+  /* ============================================================
+     DEVICE FRAMES
+     Drawn to match example/abc and example/xyz exactly:
+     AuthPalette greys, ABC #F5C518, XYZ #E07000, square everything.
+     ============================================================ */
+  .devices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:30px 0}
+  .devices.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .devices.one{grid-template-columns:minmax(0,420px)}
+  .device{min-width:0}
+  .phone{
+    position:relative;
+    background:#111;padding:9px;width:100%;max-width:284px;margin:0 auto;
+    aspect-ratio:9/17;
+  }
+  .phone.ios{border-radius:34px}
+  .phone.droid{border-radius:16px}
+  .screen{
+    position:relative;height:100%;background:#fff;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .phone.ios .screen{border-radius:26px}
+  .phone.droid .screen{border-radius:9px}
+  .island{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:31%;height:15px;background:#111;border-radius:99px;z-index:6}
+  .punch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:9px;height:9px;background:#111;border-radius:50%;z-index:6}
+  .sbar{position:relative;z-index:7;display:flex;justify-content:space-between;align-items:center;padding:8px 15px 0;font:700 8.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#888;letter-spacing:.04em;flex:0 0 auto}
+  .phone.ios .sbar{padding-top:11px}
+  .homebar{position:relative;z-index:7;margin:auto auto 8px;width:34%;height:4px;background:#d7d7d2;flex:0 0 auto}
+  .navbar{position:relative;z-index:7;margin:auto auto 7px;width:24%;height:3px;background:#cdcdc8;border-radius:99px;flex:0 0 auto}
+  .sview{flex:1;min-height:0;padding:14px 15px 0;display:flex;flex-direction:column;overflow:hidden}
+  .sview.flush{padding:0}
+  .sview.pad{padding:12px 14px 0}
+
+  /* BrandMark */
+  .brandmark{flex:0 0 auto}
+  .bm-row{display:flex;align-items:center;gap:9px}
+  .bm-sq{width:25px;height:25px;flex:0 0 25px;display:flex;align-items:center;justify-content:center;background:#111;font:800 13px/1 Inter,sans-serif}
+  .bm-sq.abc{color:#F5C518}
+  .bm-sq.xyz{color:#E07000}
+  .bm-name{font:800 18px/1 Inter,sans-serif;letter-spacing:-.5px;color:#111}
+  .bm-rule{width:33px;height:3px;margin-top:7px}
+  .bm-rule.abc{background:#F5C518}
+  .bm-rule.xyz{background:#E07000}
+
+  /* AuthPage text */
+  .s-head{font:800 16px/1.15 Inter,sans-serif;letter-spacing:-.4px;color:#111;margin-top:20px;flex:0 0 auto}
+  .s-sub{font:400 10px/1.5 Inter,sans-serif;color:#555;margin-top:5px;flex:0 0 auto}
+  .s-gap{height:16px;flex:0 0 auto}
+
+  /* AuthField + FieldLabel */
+  .s-label{font:700 7px/1 Inter,sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin:13px 0 5px;flex:0 0 auto}
+  .s-field{border:1px solid #E4E4E4;background:#F9F7F2;padding:9px 10px;font:400 10px/1 Inter,sans-serif;color:#b0b0b0;flex:0 0 auto}
+  .s-field.filled{color:#111}
+  .s-field.focus-abc{border:2px solid #F5C518;padding:8px 9px;color:#111}
+  .s-field.focus-xyz{border:2px solid #E07000;padding:8px 9px;color:#111}
+
+  /* Buttons */
+  .s-btn{margin-top:14px;padding:12px;text-align:center;font:700 10.5px/1 Inter,sans-serif;letter-spacing:.2px;flex:0 0 auto}
+  .s-btn.abc{background:#F5C518;color:#111}
+  .s-btn.xyz{background:#E07000;color:#fff}
+  .s-btn.outline{background:#fff;border:1.5px solid #111;color:#111}
+  .s-btn.text{background:none;padding:11px;color:#D63B2F;font-weight:700}
+
+  /* LabelledRule */
+  .s-rule{display:flex;align-items:center;gap:9px;margin:13px 0 0;font:700 6.5px/1 Inter,sans-serif;letter-spacing:1.7px;color:#888;text-transform:uppercase;flex:0 0 auto}
+  .s-rule::before,.s-rule::after{content:"";flex:1;height:1px;background:#E4E4E4}
+
+  /* AuthFootnote */
+  .s-note{font:400 8px/1.5 Inter,sans-serif;color:#888;margin-top:11px;flex:0 0 auto}
+  .s-note.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:7px;margin-top:6px}
+
+  /* AuthNoticeBanner */
+  .s-notice{border-left:4px solid #D63B2F;background:#FDEEEC;padding:8px 10px 9px;margin-top:4px;flex:0 0 auto}
+  .s-notice b{display:block;font:800 6.5px/1 Inter,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#D63B2F}
+  .s-notice span{display:block;font:400 9px/1.4 Inter,sans-serif;color:#111;margin-top:5px}
+
+  /* SavedSignInCardWidget — the ticket stub */
+  .ticket{display:flex;border:1px solid #E4E4E4;background:#fff;margin-top:11px;flex:0 0 auto}
+  .ticket.sel{border:2px solid #111}
+  .ticket .stub{
+    flex:0 0 19px;width:19px;display:flex;align-items:center;justify-content:center;
+    writing-mode:vertical-rl;transform:rotate(180deg);
+    font:800 6.5px/1 Inter,sans-serif;letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .ticket .stub.abc{background:#F5C518;color:#111}
+  .ticket .stub.xyz{background:#E07000;color:#fff}
+  .ticket .perf{flex:0 0 1px;width:1px;background:repeating-linear-gradient(#E4E4E4 0 3px,transparent 3px 6px)}
+  .ticket .tbody{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:10px 8px 10px 10px}
+  .ticket .av{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;font:800 12px/1 Inter,sans-serif}
+  .ticket .av.abc{background:#F5C518;color:#111}
+  .ticket .av.xyz{background:#E07000;color:#fff}
+  .ticket .who{min-width:0;flex:1}
+  .ticket .nm{font:700 10.5px/1.2 Inter,sans-serif;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ticket .em{font:400 8.5px/1.3 Inter,sans-serif;color:#555;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ticket .tag{font:400 6px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.7px;color:#888;margin-top:5px;text-transform:uppercase}
+  .ticket .go{flex:0 0 auto;font:700 11px/1 Inter,sans-serif;color:#888}
+  .ticket.sel .go.abc{color:#F5C518}
+  .ticket.sel .go.xyz{color:#E07000}
+
+  /* HomeScreen */
+  .s-appbar{padding:12px 14px;font:800 12px/1 Inter,sans-serif;flex:0 0 auto}
+  .s-appbar.abc{background:#F5C518;color:#111}
+  .s-appbar.xyz{background:#E07000;color:#fff}
+  .s-who{display:flex;align-items:center;gap:10px;margin-top:2px;flex:0 0 auto}
+  .s-who .av{width:32px;height:32px;flex:0 0 32px;display:flex;align-items:center;justify-content:center;font:800 15px/1 Inter,sans-serif}
+  .s-who .av.abc{background:#F5C518;color:#111}
+  .s-who .av.xyz{background:#E07000;color:#fff}
+  .s-who .nm{font:700 12px/1.2 Inter,sans-serif;color:#111}
+  .s-who .em{font:400 9px/1.3 Inter,sans-serif;color:#555;margin-top:1px}
+  .s-section{font:700 9px/1 Inter,sans-serif;color:#111;margin-top:18px;flex:0 0 auto}
+
+  /* Splash / busy / the moment with no UI */
+  .s-splash{position:absolute;inset:0;background:#0E0E12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:5}
+  .s-splash b{font:800 20px/1 Inter,sans-serif;color:#fff}
+  .s-splash span{font:400 9.5px/1 Inter,sans-serif;color:rgba(255,255,255,.6)}
+  .s-spin{width:19px;height:19px;border:2.5px solid rgba(255,255,255,.18);border-top-color:#fff;border-radius:50%}
+  .s-spin.dark{border-color:#E4E4E4;border-top-color:#111}
+  .s-splash.light{background:#fff}
+  .screen:has(.s-splash:not(.light)) .sbar{color:rgba(255,255,255,.55)}
+  .screen:has(.s-splash:not(.light)) .homebar,
+  .screen:has(.s-splash:not(.light)) .navbar{background:rgba(255,255,255,.3)}
+  .s-splash.light b{color:#111;font-size:22px}
+  .s-busy{position:absolute;inset:0;background:rgba(255,255,255,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;z-index:5}
+  .s-busy b{font:700 10.5px/1 Inter,sans-serif;color:#111}
+  .s-busy span{font:400 9px/1 Inter,sans-serif;color:#555}
+  .s-quiet{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:0}
+  .s-quiet i{display:block;font:700 7px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.4px;text-transform:uppercase;color:#888;font-style:normal}
+  .s-quiet em{display:block;font:800 9px/1 Inter,sans-serif;color:#D63B2F;font-style:normal;margin-top:9px}
+
+  /* Caption block under each frame */
+  .device-cap{border:1px solid var(--line);border-top:4px solid var(--yellow);background:#fff;padding:15px 17px;margin-top:18px}
+  .device-cap.ios{border-top-color:var(--blue)}
+  .device-cap.android{border-top-color:var(--green)}
+  .device-cap.danger{border-top-color:var(--red)}
+  .device-cap .step{font:800 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+  .device-cap h4{margin:7px 0 0;font-size:.98rem;letter-spacing:-.015em}
+  .device-cap p{font-size:12.5px;margin:7px 0 0}
+  .device-cap .badges{margin-top:11px}
+  .devices-note{font-size:12.5px;color:var(--muted);margin:22px 0 0;max-width:900px}
+  @media(max-width:860px){
+    .devices,.devices.two,.devices.one{grid-template-columns:1fr}
+    .phone{max-width:260px}
+  }
+
+  section{scroll-margin-top:66px}
+  /* ---- single-file shell ---- */
+  .doc{display:none}
+  .doc.on{display:block}
+  nav .doc-tab{font-size:12px;font-weight:800;color:#e8e8e8;text-decoration:none;padding:17px 10px;white-space:nowrap}
+  nav .doc-tab:hover{color:#fff}
+  nav .doc-tab[aria-current="page"]{background:var(--yellow);color:#111}
+  nav #subnav{display:flex;align-items:center;gap:4px}
+  @media print{
+    nav{display:none}
+    .doc{display:block !important;page-break-before:always}
+    .doc:first-of-type{page-break-before:auto}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">FLUTTER_SSO</div>
+  <a class="doc-tab" data-key="overview" href="#overview">01 · Overview</a>
+  <a class="doc-tab" data-key="ios" href="#ios">02 · iOS</a>
+  <a class="doc-tab" data-key="android" href="#android">03 · Android</a>
+  <a class="doc-tab" data-key="guide" href="#guide">04 · Implementation</a>
+  <span class="sep"></span>
+  <span id="subnav"></span>
+</nav>
+
+<main class="doc" data-key="overview" id="overview">
+<header>
+  <div class="wrap">
+    <div class="eyebrow">01 of 04 · Overview</div>
+    <h1>Sign In Once. Every Sibling App Offers One Tap.</h1>
+    <p>
+      <span class="mono">flutter_sso</span> shares saved sign-ins between the apps of one company.
+      It stores and returns them. It does not sign anyone in — your app still does that.
+    </p>
+    <div class="chips">
+      <div class="chip"><b>Channel</b> flutter_sso/keychain</div>
+      <div class="chip"><b>Record</b> schema v3</div>
+      <div class="chip"><b>Rule</b> share a proof, never a session</div>
+    </div>
+  </div>
+</header>
+<section id="overview-what" data-nav="What it is">
+  <div class="wrap">
+    <div class="eyebrow">01</div>
+    <h2>What It Is</h2>
+    <div class="bar"></div>
+    <div class="grid3">
+      <div class="card top-yellow">
+        <div class="kicker">Is</div>
+        <h3>A saved sign-in</h3>
+        <p>One record on the phone. It holds a proof of who the user is, plus a name and email to draw a card.</p>
+      </div>
+      <div class="card top-orange">
+        <div class="kicker">Is not</div>
+        <h3>A shared session</h3>
+        <p>No access token. No refresh token. Two apps holding one token pair looks exactly like a stolen token.</p>
+      </div>
+      <div class="card top-green">
+        <div class="kicker">Is not</div>
+        <h3>An auth client</h3>
+        <p>No server calls. No browser. No OAuth. No redirect URLs anywhere in the package.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview-flow" data-nav="How it works" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">02</div>
+    <h2>How It Works</h2>
+    <div class="bar"></div>
+
+<div class="devices">
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq xyz">X</div><div class="bm-name">XYZ</div></div>
+                <div class="bm-rule xyz"></div>
+              </div>
+              <div class="s-head">Sign in to continue</div>
+              <div class="s-sub">Use your account email and password.</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+              <div class="s-label">Password</div>
+              <div class="s-field">Your password</div>
+              <div class="s-btn xyz">Sign in</div>
+              <div class="s-note">Signing in here also signs you in to ABC with one tap. Both apps are ours.</div>
+              <div class="s-note mono">stub auth · any email, 4+ character password</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap">
+          <div class="step">A · one real login</div>
+          <h4>XYZ has nothing saved</h4>
+          <p>The form is the whole screen. XYZ gets the device secret, signs in, then calls <code>save</code>.</p>
+          <div class="badges"><span class="badge">getDeviceSecret</span><span class="badge orange">save</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Welcome back</div>
+              <div class="s-sub">One tap, and no password to remember.</div>
+              <div class="ticket sel">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                  <div class="go abc">→</div>
+                </div>
+              </div>
+              <div class="s-btn abc">Continue as John D.</div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-rule">or use your password</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap">
+          <div class="step">B · the sibling app</div>
+          <h4>ABC has never seen this user</h4>
+          <p>The stub says which app saved it. The password form stays below — a card only saves typing.</p>
+          <div class="badges"><span class="badge blue">read</span><span class="badge">SsoProfile only</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="s-appbar abc">ABC</div>
+            <div class="sview pad">
+              <div class="s-who">
+                <div class="av abc">J</div>
+                <div class="who"><div class="nm">John D.</div><div class="em">john@example.com</div></div>
+              </div>
+              <div class="s-section">Saved on this device</div>
+              <div class="ticket">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-btn outline">Sign out of ABC</div>
+              <div class="s-note">Signing out ends your ABC session on this device. The saved sign-in stays, so you can come back with one tap.</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap">
+          <div class="step">C · its own session</div>
+          <h4>ABC gets its own session</h4>
+          <p>XYZ stays signed in. ABC calls <code>setActive(true)</code>.</p>
+          <div class="badges"><span class="badge green">setActive true</span><span class="badge">active_in: ["xyz","abc"]</span></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="diagram">
+      <div class="diagram-title">The same three moments, as a mechanism</div>
+      <div class="flow">
+        <div class="node"><b>XYZ signs in</b><span>its own auth API</span></div>
+        <div class="arrow">→</div>
+        <div class="node warn"><b>save()</b><span>adds device secret, origin, time</span></div>
+        <div class="arrow">→</div>
+        <div class="node dark"><b>The record</b><span>iOS: one keychain item · Android: one file per app</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>read()</b><span>ABC, on launch</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>ABC's own session</b><span>ABC trades the proof itself</span></div>
+      </div>
+      <p class="diagram-note">Only the middle box differs by platform.</p>
+    </div>
+
+    <div class="vertical-flow">
+      <div class="vf-row"><div class="vf-time">1 · before login</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>XYZ gets the device secret and sends it with the login.</strong>
+          <p>Order matters. A secret made after the token cannot be tied to it.</p></div></div>
+      <div class="vf-row"><div class="vf-time">2 · login works</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Your server returns an <span class="mono">id_token</span> holding a hash of that secret.</strong>
+          <p>Token = who. Secret = which phone. Neither works alone.</p></div></div>
+      <div class="vf-row"><div class="vf-time">3 · save</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>XYZ calls <span class="mono">save</span>.</strong>
+          <p>Other accounts in the record are kept.</p></div></div>
+      <div class="vf-row"><div class="vf-time">4 · days later</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>ABC launches and calls <span class="mono">read</span>.</strong>
+          <p>Local on both platforms, and time-limited.</p></div></div>
+      <div class="vf-row"><div class="vf-time">5 · one tap</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>ABC works out the same secret and trades the pair.</strong>
+          <p>Same phone, same answer, every time.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="overview-record" data-nav="The record">
+  <div class="wrap">
+    <div class="eyebrow">03</div>
+    <h2>The Record</h2>
+    <div class="bar"></div>
+
+<pre>{
+  <span class="b">"v"</span>: <span class="o">3</span>,
+  <span class="b">"accounts"</span>: [
+    {
+      <span class="b">"sub"</span>:           <span class="g">"u_8f21..."</span>,          <span class="m">// account id — the key</span>
+      <span class="b">"device_secret"</span>: <span class="g">"9c4f... 64 hex"</span>,      <span class="m">// added by save()</span>
+      <span class="b">"id_token"</span>:     <span class="g">"eyJhbGciOi..."</span>,       <span class="m">// holds a hash of the secret</span>
+      <span class="b">"profile"</span>: { <span class="b">"name"</span>: <span class="g">"John D."</span>, <span class="b">"email"</span>: <span class="g">"j***@example.com"</span> },
+      <span class="b">"active_in"</span>:     [<span class="g">"xyz"</span>],              <span class="m">// apps with a live session</span>
+      <span class="b">"origin"</span>:        <span class="g">"xyz"</span>,                <span class="m">// who wrote it</span>
+      <span class="b">"issuedAt"</span>:      <span class="g">"2026-08-20T09:41:07Z"</span>
+    }
+  ]
+}</pre>
+
+    <div class="grid3">
+      <div class="card top-blue"><div class="kicker">Split</div><h3>Secret vs profile</h3>
+        <p><code>SsoSecret</code> can be traded. <code>SsoProfile</code> can only be drawn. A screen never holds the secret.</p></div>
+      <div class="card top-orange"><div class="kicker">Many</div><h3>One entry per user</h3>
+        <p>Shared phones are normal. A write keeps every other account.</p></div>
+      <div class="card top-green"><div class="kicker">Merge</div><h3>Newest write wins</h3>
+        <p>Sorted by <code>issuedAt</code>. This is what makes a sign-out stick.</p></div>
+    </div>
+
+    <div class="callout red">
+      <p>Wrong <code>v</code>? The record is skipped <strong>and left alone</strong>. An old app must never rewrite a new record.</p>
+    </div>
+  </div>
+</section>
+
+<section id="overview-secret" data-nav="Device secret" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">04</div>
+    <h2>The Device Secret</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">Worked out every time · never stored</div>
+      <div class="flow">
+        <div class="node"><b>Android</b><span>ANDROID_ID</span></div>
+        <div class="arrow">+</div>
+        <div class="node"><b>iOS</b><span>identifierForVendor</span></div>
+        <div class="arrow">→</div>
+        <div class="node warn"><b>Clean up</b><span>trim · lowercase</span></div>
+        <div class="arrow">→</div>
+        <div class="node warn"><b>Add prefix</b><span>"android|…" or "ios|…"</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>SHA-256</b><span>64 hex chars</span></div>
+      </div>
+      <p class="diagram-note">This is why a stolen token is useless. The secret comes from the phone, so it never
+        travels with the token.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card top-blue"><div class="kicker">iOS</div><h3>Survives reinstall</h3>
+        <p>As long as one sibling app is still installed. Resets when the last one goes. Empty until first unlock after a reboot.</p></div>
+      <div class="card top-green"><div class="kicker">Android</div><h3>Tied to the signing key</h3>
+        <p>Apps signed with the same key get the same value. Survives reinstall. Changes on factory reset.</p></div>
+    </div>
+
+    <div class="callout red">
+      <p>It throws instead of making a value up. One fake value would be shared by every phone that hit the same problem.</p>
+    </div>
+  </div>
+</section>
+
+<section id="overview-life" data-nav="Lifecycle">
+  <div class="wrap">
+    <div class="eyebrow">05</div>
+    <h2>Sign Out, and Come Back</h2>
+    <div class="bar"></div>
+
+<div class="devices two">
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>18:20</span><span>▮▮▮</span></div>
+            <div class="s-appbar abc">ABC</div>
+            <div class="sview pad">
+              <div class="s-who">
+                <div class="av abc">J</div>
+                <div class="who"><div class="nm">John D.</div><div class="em">john@example.com</div></div>
+              </div>
+              <div class="s-section">Saved on this device</div>
+              <div class="ticket">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-btn outline">Sign out of ABC</div>
+              <div class="s-note">Signing out ends your ABC session on this device. The saved sign-in stays, so you can come back with one tap.</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap">
+          <div class="step">Before · two buttons, two meanings</div>
+          <h4>Two buttons, two meanings</h4>
+          <p><b>Sign out</b> = <code>setActive(false)</code>: session ends, card stays. <b>Remove all</b> = <code>clear()</code>: the card goes, in both apps.</p>
+          <div class="badges"><span class="badge green">setActive false</span><span class="badge red">clear</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>08:05</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Welcome back</div>
+              <div class="s-sub">One tap, and no password to remember.</div>
+              <div class="ticket sel">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                  <div class="go abc">→</div>
+                </div>
+              </div>
+              <div class="s-btn abc">Continue as John D.</div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-rule">or use your password</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap green">
+          <div class="step">Next morning · the card survived</div>
+          <h4>Signed out, still known</h4>
+          <p>No session, so nothing comes back on its own. The card is still there.</p>
+          <div class="badges"><span class="badge blue">active_in: ["xyz"]</span><span class="badge">credential intact</span></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Call</th><th>What changes</th><th>Next launch</th></tr></thead>
+        <tbody>
+          <tr><td><code>save()</code></td><td>Account added or refreshed. This app marked active.</td><td>A card in every sibling app.</td></tr>
+          <tr><td><code>setActive(false)</code></td><td>This app marked inactive. <strong>Card stays.</strong></td><td>Card shows. No session is restored.</td></tr>
+          <tr><td><code>remove(userId)</code></td><td>That account dropped everywhere.</td><td>Gone from every app.</td></tr>
+          <tr><td><code>clear()</code></td><td>Whole record dropped, in every app.</td><td>Plain sign-in form.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="overview-fail" data-nav="When it fails" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">06</div>
+    <h2>When It Fails</h2>
+    <div class="bar"></div>
+
+<div class="devices two">
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>11:07</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Sign in to continue</div>
+              <div class="s-sub">Use your account email and password.</div>
+              <div class="s-gap"></div>
+              <div class="s-notice">
+                <b>saved sign-in expired</b>
+                <span>Enter your password once and we will save it again.</span>
+              </div>
+              <div class="s-label">Email</div>
+              <div class="s-field filled">john@example.com</div>
+              <div class="s-label">Password</div>
+              <div class="s-field focus-abc">Your password</div>
+              <div class="s-btn abc">Sign in</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap danger">
+          <div class="step">The server said no</div>
+          <h4>Token rejected</h4>
+          <p>The app calls <code>remove(userId)</code> and says why. The email is filled in already.</p>
+          <div class="badges"><span class="badge red">remove(userId)</span><span class="badge orange">removePeers</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>11:07</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Sign in to continue</div>
+              <div class="s-sub">Use your account email and password.</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+              <div class="s-label">Password</div>
+              <div class="s-field">Your password</div>
+              <div class="s-btn abc">Sign in</div>
+              <div class="s-note">One-tap sign-in is not available on this device.</div>
+              <div class="s-note mono">stub auth · any email, 4+ character password</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap">
+          <div class="step">Everything else</div>
+          <h4>Every other failure looks like this</h4>
+          <p>Wrong group, untrusted signer, timeout, bad record — <code>read()</code> returns <code>[]</code> and the normal form shows.</p>
+          <div class="badges"><span class="badge">read() → []</span><span class="badge blue">isSupported</span></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Call</th><th>On failure</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><code>read()</code></td><td class="ship">Returns <code>[]</code>. Never throws.</td><td>A saved sign-in is a bonus. Losing it must not block sign-in.</td></tr>
+          <tr><td><code>getDeviceSecret()</code></td><td class="must">Throws</td><td>There is no safe fake value.</td></tr>
+          <tr><td>Every write</td><td class="must">Throws</td><td>The app asked to record a fact. Catch and log it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout orange">
+      <p>A broken setup looks exactly like a user who never signed in. Wire <code>onFailure</code> to analytics and
+        watch the read success rate per OS version.</p>
+    </div>
+  </div>
+</section>
+
+<section id="overview-rules" data-nav="Rules">
+  <div class="wrap">
+    <div class="eyebrow">07</div>
+    <h2>Six Rules It Never Breaks</h2>
+    <div class="bar"></div>
+    <div class="grid2">
+      <div>
+        <div class="invariant"><b>1</b> No access or refresh token in the record. Each app trades for its own session.</div>
+        <div class="invariant"><b>2</b> The proof is useless on another phone.</div>
+        <div class="invariant"><b>3</b> <span class="mono">read()</span> never throws and never hangs.</div>
+      </div>
+      <div>
+        <div class="invariant"><b>4</b> An unknown schema is skipped and left alone.</div>
+        <div class="invariant"><b>5</b> Nothing company-specific is inside the package. It all comes from <span class="mono">SsoConfig</span>.</div>
+        <div class="invariant"><b>6</b> One app never edits another app's session state.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview-split" data-nav="iOS vs Android" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">08</div>
+    <h2>iOS vs Android</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>iOS</th><th>Android</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Where it lives</strong></td><td>One item outside every app.</td><td>One encrypted file inside each app. No shared place exists.</td></tr>
+          <tr><td><strong>Who allows it</strong></td><td>The OS, from the code signature.</td><td>Our own code, from the signing certificate, on every call.</td></tr>
+          <tr><td><strong>How it is shared</strong></td><td>Both apps open the same item.</td><td>The sibling is asked over Binder, once.</td></tr>
+          <tr><td><strong>Read cost</strong></td><td>~2 ms.</td><td>One file decrypt per app. Still local.</td></tr>
+          <tr><td><strong>Your Dart code</strong></td><td colspan="2"><span class="ship">Exactly the same on both.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nextdoc">
+      <a href="#ios"><div class="kicker">Doc 02</div><b>Inside iOS</b><span>One keychain item the app cannot own.</span></a>
+      <a href="#android"><div class="kicker">Doc 03</div><b>Inside Android</b><span>No shared store, so a locked door instead.</span></a>
+      <a href="#guide"><div class="kicker">Doc 04</div><b>Implementation guide</b><span>Setup, and which method to call for what.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<main class="doc" data-key="ios" id="ios">
+<header>
+  <div class="wrap">
+    <div class="eyebrow">02 of 04 · iOS</div>
+    <h1>iOS Already Has Shared Storage. We Just Ask For It.</h1>
+    <p>
+      A <strong>keychain access group</strong> lives outside your app, in <span class="mono">securityd</span>.
+      The OS decides who can open it by reading your code signature. Nothing to ask the user. Nothing to set at runtime.
+    </p>
+    <div class="chips">
+      <div class="chip"><b>File</b> ios/Classes/FlutterSsoPlugin.swift</div>
+      <div class="chip"><b>Methods</b> read · write · delete · infoValue</div>
+      <div class="chip"><b>Min</b> iOS 12</div>
+    </div>
+  </div>
+</header>
+<section id="ios-see" data-nav="What you see">
+  <div class="wrap">
+    <div class="eyebrow">01</div>
+    <h2>What the User Sees</h2>
+    <div class="bar"></div>
+
+<div class="devices">
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq xyz">X</div><div class="bm-name">XYZ</div></div>
+                <div class="bm-rule xyz"></div>
+              </div>
+              <div class="s-head">Sign in to continue</div>
+              <div class="s-sub">Use your account email and password.</div>
+              <div class="s-label">Email</div>
+              <div class="s-field filled">john@example.com</div>
+              <div class="s-label">Password</div>
+              <div class="s-field filled">••••••••</div>
+              <div class="s-btn xyz">Sign in</div>
+              <div class="s-note">Signing in here also signs you in to ABC with one tap. Both apps are ours.</div>
+            </div>
+            <div class="homebar"></div>
+            <div class="s-busy">
+              <div class="s-spin dark"></div>
+              <b>Signing you in…</b>
+              <span>Setting up your XYZ session</span>
+            </div>
+          </div>
+        </div>
+        <div class="device-cap ios">
+          <div class="step">A · the write</div>
+          <h4>XYZ writes one keychain item</h4>
+          <p><code>SecItemUpdate</code> first, then <code>SecItemAdd</code> if it is not there yet.</p>
+          <div class="badges"><span class="badge blue">FlutterSsoPlugin.write</span><span class="badge orange">SecItemAdd</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="sview"></div>
+            <div class="homebar"></div>
+            <div class="s-splash light">
+              <b>ABC</b>
+            </div>
+          </div>
+        </div>
+        <div class="device-cap ios">
+          <div class="step">B · the moment with no UI</div>
+          <h4>No alert. No browser. ~2 ms.</h4>
+          <p>The entitlement settled this at build time, so <code>securityd</code> only checks the code signature.</p>
+          <div class="badges"><span class="badge blue">securityd</span><span class="badge red">code signature check</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone ios">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Welcome back</div>
+              <div class="s-sub">One tap, and no password to remember.</div>
+              <div class="ticket sel">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                  <div class="go abc">→</div>
+                </div>
+              </div>
+              <div class="s-btn abc">Continue as John D.</div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-rule">or use your password</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+            </div>
+            <div class="homebar"></div>
+          </div>
+        </div>
+        <div class="device-cap ios">
+          <div class="step">C · one tap, its own session</div>
+          <h4>ABC reads it and trades it</h4>
+          <p>The card is drawn from <code>SsoProfile</code> only. XYZ can be deleted — the item stays.</p>
+          <div class="badges"><span class="badge green">SsoStore.read</span><span class="badge">~2 ms</span></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="callout blue">
+      <p>People expect a consent sheet here. That belongs to browser sign-in, not to this. There is no sheet,
+        because permission was decided when the app was built.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-map" data-nav="The Swift file" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">02</div>
+    <h2>The Whole Swift File</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">157 lines · one keychain item</div>
+      <div class="flow">
+        <div class="node dark"><b>register(with:)</b><span>channel "flutter_sso/keychain"</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>Arguments</b><span>rejects empty key, service or group</span></div>
+        <div class="arrow">→</div>
+        <div class="node warn"><b>query</b><span>6 attributes both apps must match</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>SecItem…</b><span>CopyMatching · Update · Add · Delete</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>OSStatus → Dart</b><span>status becomes the error code</span></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Purpose</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td><code>infoValue</code></td><td>Read one Info.plist string.</td><td>Refuses a value that still has <code>$(</code> in it.</td></tr>
+          <tr><td><code>read</code></td><td>Get the record.</td><td>Not found returns <code>nil</code>, not an error.</td></tr>
+          <tr><td><code>write</code></td><td>Save the record.</td><td>Update first, then add.</td></tr>
+          <tr><td><code>delete</code></td><td>Drop the record.</td><td>By key only. There is no delete-all.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout red">
+      <p>No delete-all, ever. In a shared group a blanket delete takes the sibling app's items too.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-query" data-nav="The query">
+  <div class="wrap">
+    <div class="eyebrow">03</div>
+    <h2>Six Attributes That Must Match</h2>
+    <div class="bar"></div>
+
+<pre><span class="b">var</span> query: [String: <span class="y">Any</span>] {
+  [
+    kSecClass              : <span class="o">kSecClassGenericPassword</span>,
+    kSecAttrService        : service,   <span class="m">// "flutter_sso"</span>
+    kSecAttrAccount        : key,       <span class="m">// "sso_credentials"</span>
+    kSecAttrAccessGroup    : group,     <span class="m">// "&lt;TeamID&gt;.com.example.sso.shared"</span>
+    kSecAttrAccessible     : <span class="r">kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly</span>,
+    kSecAttrSynchronizable : <span class="o">false</span>,
+  ]
+}</pre>
+
+    <div class="grid2">
+      <div class="card top-blue"><div class="kicker">kSecAttrAccessible</div><h3>After first unlock, this device</h3>
+        <p>Works with the screen off, so background code can read it. Never goes into a backup. Use
+          <code>WhenUnlocked</code> instead and a locked phone returns <code>-25308</code>.</p></div>
+      <div class="card top-purple"><div class="kicker">kSecAttrSynchronizable</div><h3>false</h3>
+        <p>The record describes <em>this</em> phone. On an iPad the secret would be different, so every card there
+          would be dead. Group + sync is also illegal.</p></div>
+    </div>
+
+    <div class="callout orange">
+      <p><code>kSecAttrAccessible</code> also filters reads. If the sibling app used a different one you get a second,
+        invisible item. No error. Just nothing.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-group" data-nav="The group name" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">04</div>
+    <h2>Naming the Group</h2>
+    <div class="bar"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="filename">Runner.entitlements</div>
+<pre><span class="b">&lt;key&gt;</span>keychain-access-groups<span class="b">&lt;/key&gt;</span>
+<span class="b">&lt;array&gt;</span>
+  <span class="b">&lt;string&gt;</span><span class="r">$(AppIdentifierPrefix)</span><span class="g">com.example.sso.shared</span><span class="b">&lt;/string&gt;</span>
+<span class="b">&lt;/array&gt;</span></pre>
+        <div class="filename">Info.plist — what Dart reads</div>
+<pre><span class="b">&lt;key&gt;</span>SsoSharedKeychainGroup<span class="b">&lt;/key&gt;</span>
+<span class="b">&lt;string&gt;</span><span class="r">$(DEVELOPMENT_TEAM).</span><span class="g">com.example.sso.shared</span><span class="b">&lt;/string&gt;</span></pre>
+      </div>
+      <div>
+        <div class="callout red">
+          <p><strong>The one-character trap.</strong> <code>$(AppIdentifierPrefix)</code> ends in a dot.
+            <code>$(DEVELOPMENT_TEAM)</code> does not, so add your own. Miss it and every read returns
+            <code>-34018</code>. Neither file warns you.</p>
+        </div>
+        <div class="callout green">
+          <p><strong>Ten-second check.</strong> Run the app and look for the <code>group:</code> log line. If it is
+            not the full resolved string, Team ID included, stop. Nothing else can work.</p>
+        </div>
+        <p>Or skip both files and pass <code>SsoConfig.sharedAccessGroup</code> directly. Both apps must end up with
+          the same string.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ios-seq" data-nav="Step by step">
+  <div class="wrap">
+    <div class="eyebrow">05</div>
+    <h2>One Read, Step by Step</h2>
+    <div class="bar"></div>
+
+    <div class="vertical-flow">
+      <div class="vf-row"><div class="vf-time">1 · earlier, XYZ</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">SecItemAdd</span> — maybe months ago.</strong>
+          <p>XYZ may be uninstalled by now. The item stays.</p></div></div>
+      <div class="vf-row"><div class="vf-time">2 · ABC, Dart</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">read()</span> on launch.</strong><p>400 ms limit.</p></div></div>
+      <div class="vf-row"><div class="vf-time">3 · SsoKeychain</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Builds the arguments.</strong><p>Group resolved once per run, then cached.</p></div></div>
+      <div class="vf-row"><div class="vf-time">4 · channel</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">invokeMethod('read')</span></strong><p>Still inside your process.</p></div></div>
+      <div class="vf-row"><div class="vf-time">5 · Swift</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">SecItemCopyMatching(query)</span></strong><p>Your process stops being in charge here.</p></div></div>
+      <div class="vf-row"><div class="vf-time">6 · securityd</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Is this caller in that group?</strong>
+          <p>Answered from the code signature. The app cannot claim it. <strong>This is the security of the whole page.</strong></p></div></div>
+      <div class="vf-row"><div class="vf-time">7 · back</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Data, or not found.</strong>
+          <p>An empty keychain and a wrong group look the same here. That is the bug you will chase.</p></div></div>
+      <div class="vf-row"><div class="vf-time">8 · Dart</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>A list of credentials, newest first.</strong><p>A bad entry is dropped on its own.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="ios-errors" data-nav="Errors" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">06</div>
+    <h2>Errors</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Code</th><th>What happened</th><th>Retry?</th></tr></thead>
+        <tbody>
+          <tr><td><code>-34018</code></td><td>Wrong or missing group, an unresolved build variable — or a known OS glitch at launch.</td><td class="ship">yes</td></tr>
+          <tr><td><code>-25308</code></td><td>Phone locked, or before the first unlock after a reboot.</td><td class="ship">yes</td></tr>
+          <tr><td><span class="mono">errSecItemNotFound</span></td><td>Nothing saved, or the group name is wrong.</td><td>—</td></tr>
+          <tr><td><code>misconfigured</code></td><td>No group at all. Thrown before any platform call.</td><td>no</td></tr>
+          <tr><td><code>bad_arguments</code></td><td>A required argument was missing. A code bug.</td><td>no</td></tr>
+          <tr><td><code>unrecognised_record</code></td><td>Not schema <code>v3</code>. Skipped and left alone.</td><td>no</td></tr>
+          <tr><td><code>missing_plugin</code></td><td>Stale build.</td><td>no</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout red">
+      <p><strong>Never sign the user out on <code>-34018</code>.</strong> A real setup error fails every time.
+        This one comes and goes. Retry it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-traps" data-nav="Traps">
+  <div class="wrap">
+    <div class="eyebrow">07</div>
+    <h2>Four Traps in a Build That Compiles</h2>
+    <div class="bar"></div>
+
+    <div class="test"><div class="gate">iOS-01</div><div><strong>One character apart.</strong> The entitlement and the Info.plist value must end up identical.</div><div class="fail">-34018 EVERY CALL</div></div>
+    <div class="test"><div class="gate">iOS-02</div><div><strong>Accessibility filters reads.</strong> A mismatch makes a second item you will never see.</div><div class="fail">SILENT</div></div>
+    <div class="test"><div class="gate">iOS-03</div><div><strong>Unqualified writes drift.</strong> With the entitlement present, any keychain write without a group lands in the shared partition.</div><div class="fail">SILENT</div></div>
+    <div class="test"><div class="gate">iOS-04</div><div><strong>Simulator is not a device.</strong> Test release entitlements on real hardware.</div><div class="pass">REQUIRED</div></div>
+
+    <div class="nextdoc">
+      <a href="#android"><div class="kicker">Doc 03 · Next</div><b>Inside Android</b><span>Everything the OS did for you here, you write yourself there.</span></a>
+      <a href="#guide"><div class="kicker">Doc 04</div><b>Implementation guide</b><span>Setup, and which method to call for what.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<main class="doc" data-key="android" id="android">
+<header>
+  <div class="wrap">
+    <div class="eyebrow">03 of 04 · Android</div>
+    <h1>Android Has No Shared Store, So We Built a Locked Door.</h1>
+    <p>
+      App data belongs to the app's own Linux user, and its Keystore key is tied to that user. A sibling app
+      <strong>cannot</strong> read your file, and could not decrypt it if it could. So we ask it instead — and the
+      lock is the caller's <strong>signing certificate</strong>, checked on every call.
+    </p>
+    <div class="chips">
+      <div class="chip"><b>Package</b> com.flutter_sso · 6 files</div>
+      <div class="chip"><b>At rest</b> AES-256/GCM · Keystore</div>
+      <div class="chip"><b>minSdk</b> 23</div>
+    </div>
+  </div>
+</header>
+<section id="android-see" data-nav="What you see">
+  <div class="wrap">
+    <div class="eyebrow">01</div>
+    <h2>What the User Sees</h2>
+    <div class="bar"></div>
+
+<div class="devices">
+      <div class="device">
+        <div class="phone droid">
+          <div class="punch"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+            <div class="s-appbar xyz">XYZ</div>
+            <div class="sview pad">
+              <div class="s-who">
+                <div class="av xyz">J</div>
+                <div class="who"><div class="nm">John D.</div><div class="em">john@example.com</div></div>
+              </div>
+              <div class="s-section">Saved on this device</div>
+              <div class="ticket">
+                <div class="tbody">
+                  <div class="av xyz">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-btn outline">Sign out of XYZ</div>
+              <div class="s-note">Signing out ends your XYZ session on this device. The saved sign-in stays, so you can come back with one tap.</div>
+            </div>
+            <div class="navbar"></div>
+          </div>
+        </div>
+        <div class="device-cap android">
+          <div class="step">A · the write, then the push</div>
+          <h4>XYZ writes, then pushes</h4>
+          <p>Encrypted with XYZ’s own Keystore key, then handed to every trusted door.</p>
+          <div class="badges"><span class="badge green">write · AES-256/GCM</span><span class="badge orange">pushToPeers</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone droid">
+          <div class="punch"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="sview"></div>
+            <div class="navbar"></div>
+            <div class="s-splash light">
+              <b>ABC</b>
+            </div>
+          </div>
+        </div>
+        <div class="device-cap android">
+          <div class="step">B · the one round of questions</div>
+          <h4>ABC was installed later</h4>
+          <p>Nothing local to read, so it asks every door once. <code>pullPeers()</code>, 1500 ms cap.</p>
+          <div class="badges"><span class="badge orange">pullPeers ≤ 1500 ms</span><span class="badge red">certificate checked both ways</span></div>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone droid">
+          <div class="punch"></div>
+          <div class="screen">
+            <div class="sbar"><span>9:42</span><span>▮▮▮</span></div>
+            <div class="sview">
+              <div class="brandmark">
+                <div class="bm-row"><div class="bm-sq abc">A</div><div class="bm-name">ABC</div></div>
+                <div class="bm-rule abc"></div>
+              </div>
+              <div class="s-head">Welcome back</div>
+              <div class="s-sub">One tap, and no password to remember.</div>
+              <div class="ticket sel">
+                <div class="stub abc">from xyz</div>
+                <div class="perf"></div>
+                <div class="tbody">
+                  <div class="av abc">J</div>
+                  <div class="who">
+                    <div class="nm">John D.</div>
+                    <div class="em">john@example.com</div>
+                    <div class="tag">saved on this device</div>
+                  </div>
+                  <div class="go abc">→</div>
+                </div>
+              </div>
+              <div class="s-btn abc">Continue as John D.</div>
+              <div class="s-btn text">Remove all saved sign-ins</div>
+              <div class="s-rule">or use your password</div>
+              <div class="s-label">Email</div>
+              <div class="s-field">you@example.com</div>
+            </div>
+            <div class="navbar"></div>
+          </div>
+        </div>
+        <div class="device-cap android">
+          <div class="step">C · caught up for good</div>
+          <h4>Now it is a local slot</h4>
+          <p>Filed as <code>…from.com.example.sso.xyz</code>. No IPC ever again.</p>
+          <div class="badges"><span class="badge blue">readInbox</span><span class="badge green">local from now on</span></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="diagram">
+      <div class="diagram-title">Push on write, so a read never has to ask</div>
+      <div class="flow">
+        <div class="node warn"><b>On write</b><span>push to every trusted door · user is already waiting</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>On read</b><span>own file + pushed slots · no IPC, nobody woken</span></div>
+        <div class="arrow">→</div>
+        <div class="node danger"><b>Only if empty</b><span>pullPeers() once · 1500 ms cap</span></div>
+      </div>
+      <p class="diagram-note">Nothing anywhere means one of two things: nobody has signed in, or this app was
+        installed late. Only one is fixable, so it asks once, right there.</p>
+    </div>
+  </div>
+</section>
+
+<section id="android-map" data-nav="The Kotlin files" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">02</div>
+    <h2>Six Kotlin Files</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">android/src/main/kotlin/com/flutter_sso/</div>
+      <div class="flow">
+        <div class="node dark"><b>FlutterSsoPlugin</b><span>channel "flutter_sso/keychain"</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>Two thread pools</b><span>local work on one · peer calls on another</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>SsoRecordStore</b><span>prefs + AES-256/GCM from the Keystore</span></div>
+        <div class="arrow">+</div>
+        <div class="node warn"><b>SsoSharedProvider</b><span>the exported door · call() only</span></div>
+        <div class="arrow">→</div>
+        <div class="node danger"><b>SsoTrust</b><span>checks the signing certificate</span></div>
+      </div>
+      <p class="diagram-note"><span class="mono">SsoRecord</span> is the only native code that looks inside a
+        record. <span class="mono">SsoLog</span> logs under the same <span class="mono">sso</span> tag, because the
+        door can run with no Flutter engine attached.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card top-yellow"><div class="kicker">worker</div><h3>One thread, local only</h3>
+        <p>Our own file is touched from one place, so two writes cannot mix.</p></div>
+      <div class="card top-orange"><div class="kicker">peerWorker</div><h3>Separate pool, remote only</h3>
+        <p>A slow neighbour can take 1500 ms. On one thread it would block a normal read and the card would never show.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="android-door" data-nav="The door">
+  <div class="wrap">
+    <div class="eyebrow">03</div>
+    <h2>The Door</h2>
+    <div class="bar"></div>
+
+<pre><span class="m">&lt;!-- API 30+: without this the sibling is invisible --&gt;</span>
+<span class="b">&lt;queries&gt;</span><span class="b">&lt;intent&gt;</span>
+  <span class="b">&lt;action</span> android:name=<span class="g">"flutter_sso.action.SHARED_SIGN_INS"</span> <span class="b">/&gt;</span>
+<span class="b">&lt;/intent&gt;</span><span class="b">&lt;/queries&gt;</span>
+
+<span class="b">&lt;provider</span>
+  android:name=<span class="g">"com.flutter_sso.SsoSharedProvider"</span>
+  android:authorities=<span class="g">"${applicationId}.flutter_sso"</span>
+  android:exported=<span class="r">"true"</span><span class="b">&gt;</span>
+  <span class="b">&lt;intent-filter&gt;</span>
+    <span class="b">&lt;action</span> android:name=<span class="g">"flutter_sso.action.SHARED_SIGN_INS"</span> <span class="b">/&gt;</span>
+  <span class="b">&lt;/intent-filter&gt;</span>
+<span class="b">&lt;/provider&gt;</span></pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Door method</th><th>What the receiver does</th></tr></thead>
+        <tbody>
+          <tr><td><code>read</code></td><td>Answers with its own record <em>plus every slot</em> — not just what it signed in with.</td></tr>
+          <tr><td><code>write</code></td><td>Files it as a slot under the caller's package name. Capped at 256 KB.</td></tr>
+          <tr><td><code>remove</code></td><td>Drops one account, but only if the schema version matches.</td></tr>
+          <tr><td><code>clear</code></td><td>Drops the record and every slot.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout orange">
+      <p><strong>Exported, and on purpose without a signature permission.</strong> That needs both apps signed with
+        one key. Two apps on Play App Signing never are. The check happens inside <code>call()</code> instead.</p>
+    </div>
+    <div class="callout blue">
+      <p><strong>Why <code>read</code> includes slots:</strong> an app that only ever tapped "Continue as" holds the
+        account in a slot. Answer with the own record alone and uninstalling one app takes the whole family's
+        sign-ins with it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="android-trust" data-nav="Trust" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">04</div>
+    <h2>Who Gets In</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">Checked in both directions, every call</div>
+      <div class="flow">
+        <div class="node"><b>Caller knocks</b><span>contentResolver.call(...)</span></div>
+        <div class="arrow">→</div>
+        <div class="node danger"><b>callingPackage</b><span>the platform's answer, not the caller's claim</span></div>
+        <div class="arrow">→</div>
+        <div class="node danger"><b>SsoTrust</b><span>self, or an allowed SHA-256</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>Answered</b></div>
+        <div class="arrow">/</div>
+        <div class="node dark"><b>null</b><span>same answer as "nothing saved"</span></div>
+      </div>
+      <p class="diagram-note">Also asked of whoever answers <em>us</em>. Without that, any app could stand up a
+        door with our action and hand us an account.</p>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <div class="filename">app/build.gradle.kts</div>
+<pre><span class="m">// debug: both apps share debug.keystore</span>
+manifestPlaceholders[<span class="g">"ssoTrustedSigners"</span>] = <span class="g">"self"</span>
+
+<span class="m">// release, on Play:</span>
+manifestPlaceholders[<span class="g">"ssoTrustedSigners"</span>] = <span class="r">"AA:BB:…,CC:DD:…"</span></pre>
+      </div>
+      <div>
+        <div class="callout red">
+          <p><strong><code>self</code> breaks on Play.</strong> Two apps under Play App Signing have
+            <strong>different</strong> certificates. It works on every phone you test and none you ship to.</p>
+          <p>Take both digests from Play Console → App integrity → <strong>App signing key certificate</strong>.
+            Not the upload key. Same list in both apps.</p>
+        </div>
+        <div class="callout">
+          <p><strong>Fails closed.</strong> Any doubt is a "no". A package hidden by Android 11 visibility rules
+            answers false, and treating that as a "maybe" would open the door exactly when the OS meant to shut it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="android-slots" data-nav="Slots">
+  <div class="wrap">
+    <div class="eyebrow">05</div>
+    <h2>One Account, Many Copies</h2>
+    <div class="bar"></div>
+
+<pre><span class="m"># ABC's own prefs file. Three keys, one account.</span>
+<span class="b">"sso_credentials"</span>                                <span class="m">→ what ABC signed in with</span>
+<span class="b">"sso_credentials.from.com.example.sso.xyz"</span>       <span class="m">→ pushed by XYZ</span>
+<span class="b">"sso_credentials.from.com.example.sso.old"</span>       <span class="m">→ app gone; nobody will push again</span>
+
+<span class="m"># Each value is Base64( 12-byte IV || AES-256/GCM ciphertext ).</span></pre>
+
+    <div class="diagram">
+      <div class="diagram-title">remove(userId) has to reach all of it</div>
+      <div class="flow">
+        <div class="node"><b>Our record</b></div>
+        <div class="arrow">+</div>
+        <div class="node warn"><b>Our slots</b><span>dead ones too</span></div>
+        <div class="arrow">+</div>
+        <div class="node danger"><b>Every sibling</b><span>their record and their slots</span></div>
+        <div class="arrow">=</div>
+        <div class="node secure"><b>It sticks</b><span>no copy left to merge back</span></div>
+      </div>
+      <p class="diagram-note">Miss one and the next read brings the account back. For a token the server just
+        rejected, that means offering it again.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card top-green"><div class="kicker">Why slots</div><h3>Sign-ins outlive their app</h3>
+        <p>A slot is the sibling's record kept as-is. Uninstall that app and its accounts still work.</p></div>
+      <div class="card top-red"><div class="kicker">Guard</div><h3>Wrong version, no rewrite</h3>
+        <p>If the schema does not match, the record is left alone. A stale card costs less than a lost session.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="android-seq" data-nav="Step by step" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">06</div>
+    <h2>One Save, One Launch</h2>
+    <div class="bar"></div>
+
+    <div class="vertical-flow">
+      <div class="vf-row"><div class="vf-time">1 · XYZ</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Writes its own record, then pushes.</strong><p>Done at the one place a write happens, so nobody can forget it.</p></div></div>
+      <div class="vf-row"><div class="vf-time">2 · Binder</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Calls ABC's door with the record.</strong><p>This starts ABC's process if it is not running. All doors are asked at once, not one by one.</p></div></div>
+      <div class="vf-row"><div class="vf-time">3 · ABC's door</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Is this caller signed by a certificate we trust?</strong><p>No → <span class="mono">null</span>. Nothing to learn from a refusal.</p></div></div>
+      <div class="vf-row"><div class="vf-time">4 · ABC's store</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Filed as a slot named after the sender.</strong><p>Taken from its user id, never from anything it sent. It can only overwrite its own slot.</p></div></div>
+      <div class="vf-row"><div class="vf-time">— days later —</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>ABC launches.</strong><p>None of the above happens again.</p></div></div>
+      <div class="vf-row"><div class="vf-time">5 · ABC, Dart</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">read</span> and <span class="mono">readInbox</span>.</strong><p>900 ms limit. A miss drops our own entries and keeps the siblings'.</p></div></div>
+      <div class="vf-row"><div class="vf-time">6 · Kotlin</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Own file plus every slot, decrypted.</strong><p>No IPC. The answers were filed at step 4.</p></div></div>
+      <div class="vf-row"><div class="vf-time">7 · Dart</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Merged: one entry per user, newest wins.</strong><p>That rule lives in Dart only, so it cannot drift.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="android-errors" data-nav="Errors">
+  <div class="wrap">
+    <div class="eyebrow">07</div>
+    <h2>Errors</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>What Dart sees</th><th>What happened</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono">nothing at all</span></td><td>Door refused us, or is not installed, or is invisible.</td><td>One less card. Logged as <code>not a trusted signer</code>.</td></tr>
+          <tr><td><code>GeneralSecurityException</code></td><td>Keystore key gone, or the value is damaged.</td><td>Entry deleted. Never reaches Dart as an error.</td></tr>
+          <tr><td><code>bad_arguments</code></td><td>A required argument was missing. A code bug.</td><td>Throws.</td></tr>
+          <tr><td><code>device_secret_unavailable</code></td><td><code>ANDROID_ID</code> came back empty.</td><td>Throws. No fake value.</td></tr>
+          <tr><td><code>unrecognised_record</code></td><td>Not schema <code>v3</code>.</td><td>Skipped and left alone.</td></tr>
+          <tr><td><span class="mono">TimeoutException</span></td><td>900 ms local, or 1500 ms for peers.</td><td>Degrades. Never abandons the read.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout green">
+      <p><strong>Read the <code>peers:</code> log line.</strong> <em>1 door, 0 records</em> = the sibling has nothing
+        saved yet. <em>0 doors</em> = not installed, not visible, or not trusted — and signing in over there will
+        never help.</p>
+    </div>
+  </div>
+</section>
+
+<section id="android-traps" data-nav="Traps" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">08</div>
+    <h2>Four Traps in a Build That Compiles</h2>
+    <div class="bar"></div>
+
+    <div class="test"><div class="gate">AND-01</div><div><strong>No <code>&lt;queries&gt;</code>, no siblings.</strong> On API 30+ they are simply invisible.</div><div class="fail">SILENT · 0 DOORS</div></div>
+    <div class="test"><div class="gate">AND-02</div><div><strong><code>self</code> is a lie on Play.</strong> Add both SHA-256 digests, in both apps, before release.</div><div class="fail">DEBUG ONLY</div></div>
+    <div class="test"><div class="gate">AND-03</div><div><strong>Upload key ≠ signing key.</strong> Play re-signs. Allowlist the app signing key certificate.</div><div class="fail">ALL REFUSED</div></div>
+    <div class="test"><div class="gate">AND-04</div><div><strong><code>Binder.getCallingUid()</code> fails open.</strong> Off the binder thread it returns <em>your own</em> id. Use <code>callingPackage</code>.</div><div class="fail">GATE OPENS</div></div>
+  </div>
+</section>
+
+<section id="android-compare" data-nav="iOS vs Android">
+  <div class="wrap">
+    <div class="eyebrow">09</div>
+    <h2>Same Four Calls. Nothing Else Is the Same.</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>iOS</th><th>Android</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Where it lives</strong></td><td>One item outside every app.</td><td>One encrypted file inside each app.</td></tr>
+          <tr><td><strong>Who allows it</strong></td><td>The OS, at build time.</td><td>Our Kotlin, on every call.</td></tr>
+          <tr><td><strong>How it is shared</strong></td><td>Both apps open the same item.</td><td>Pushed on write. Asked once if empty.</td></tr>
+          <tr><td><strong>Read cost</strong></td><td>~2 ms. 400 ms budget.</td><td>One decrypt per file. 900 ms budget.</td></tr>
+          <tr><td><strong>Removal</strong></td><td>Delete one item.</td><td>Own file, all slots, then every sibling.</td></tr>
+          <tr><td><strong>Extra methods</strong></td><td>none</td><td><code>deviceId</code> <code>readInbox</code> <code>pushToPeers</code> <code>pullPeers</code> <code>removeLocalCopies</code> <code>removePeers</code> <code>clearPeers</code></td></tr>
+          <tr><td><strong>Silent failure</strong></td><td>One wrong character in the group.</td><td>Missing <code>&lt;queries&gt;</code>, or the wrong digest.</td></tr>
+          <tr><td><strong>Your Dart code</strong></td><td colspan="2"><span class="ship">Exactly the same on both.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nextdoc">
+      <a href="#guide"><div class="kicker">Doc 04 · Next</div><b>Implementation guide</b><span>Setup, and which method to call for what.</span></a>
+      <a href="#overview"><div class="kicker">Doc 01</div><b>Overview</b><span>What it is, the record, the device secret.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<main class="doc" data-key="guide" id="guide">
+<header>
+  <div class="wrap">
+    <div class="eyebrow">04 of 04 · Implementation Guide</div>
+    <h1>Six Methods. Here Is What Each One Is For.</h1>
+    <p>
+      Setup for both platforms, then every public method — what it does, when to call it, and whether it throws.
+    </p>
+    <div class="chips">
+      <div class="chip"><b>Public API</b> 6 methods</div>
+      <div class="chip"><b>Setup</b> 2 files per platform</div>
+      <div class="chip"><b>Throws</b> everything except read</div>
+    </div>
+  </div>
+</header>
+<section id="guide-setup" data-nav="Setup">
+  <div class="wrap">
+    <div class="eyebrow">01</div>
+    <h2>Setup</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">What has to be true before any of this works</div>
+      <div class="flow">
+        <div class="node dark"><b>Both apps</b><span>same keychainService and recordKey · different appId</span></div>
+        <div class="arrow">+</div>
+        <div class="node"><b>iOS</b><span>same access group in the entitlement and Info.plist</span></div>
+        <div class="arrow">+</div>
+        <div class="node"><b>Android</b><span>each app trusts the other's signing certificate</span></div>
+        <div class="arrow">=</div>
+        <div class="node secure"><b>One-tap works</b></div>
+      </div>
+      <p class="diagram-note">Get one of these wrong and nothing errors. You just never see a card.</p>
+    </div>
+
+    <div class="filename">pubspec.yaml</div>
+<pre>dependencies:
+  flutter_sso:
+    path: ../flutter_sso   <span class="m"># or your git / hosted source</span></pre>
+
+    <div class="filename">Anywhere in your app · one per app</div>
+<pre><span class="b">final</span> store = <span class="y">SsoStore</span>(
+  config: <span class="b">const</span> <span class="y">SsoConfig</span>(
+    appId: <span class="g">'abc'</span>,          <span class="m">// must differ from the sibling app's</span>
+  ),
+  onFailure: (error, stack) => analytics.<span class="o">ssoFailed</span>(error),
+);</pre>
+
+    <div class="grid2">
+      <div>
+        <div class="filename">iOS · Runner.entitlements</div>
+<pre><span class="b">&lt;key&gt;</span>keychain-access-groups<span class="b">&lt;/key&gt;</span>
+<span class="b">&lt;array&gt;</span>
+  <span class="b">&lt;string&gt;</span><span class="r">$(AppIdentifierPrefix)</span><span class="g">com.example.sso.shared</span><span class="b">&lt;/string&gt;</span>
+<span class="b">&lt;/array&gt;</span></pre>
+        <div class="filename">iOS · Info.plist</div>
+<pre><span class="b">&lt;key&gt;</span>SsoSharedKeychainGroup<span class="b">&lt;/key&gt;</span>
+<span class="b">&lt;string&gt;</span><span class="r">$(DEVELOPMENT_TEAM).</span><span class="g">com.example.sso.shared</span><span class="b">&lt;/string&gt;</span></pre>
+        <p><code>$(AppIdentifierPrefix)</code> ends in a dot. <code>$(DEVELOPMENT_TEAM)</code> does not — add your own.</p>
+      </div>
+      <div>
+        <div class="filename">Android · AndroidManifest.xml</div>
+<pre><span class="b">&lt;meta-data</span>
+  android:name=<span class="g">"SsoTrustedSigners"</span>
+  android:value=<span class="g">"${ssoTrustedSigners}"</span> <span class="b">/&gt;</span></pre>
+        <div class="filename">Android · app/build.gradle.kts</div>
+<pre>defaultConfig {
+  minSdk = <span class="o">23</span>
+  manifestPlaceholders[<span class="g">"ssoTrustedSigners"</span>] = <span class="g">"self"</span>
+}
+<span class="m">// release on Play: use both apps' SHA-256 digests instead,
+// from Play Console → App integrity → App signing key certificate.</span></pre>
+        <p>The provider and <code>&lt;queries&gt;</code> ship inside the package. You do not add them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="guide-when" data-nav="Which method, when" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">02</div>
+    <h2>Which Method, When</h2>
+    <div class="bar"></div>
+
+    <div class="diagram">
+      <div class="diagram-title">Map the six methods onto your app's screens</div>
+      <div class="flow">
+        <div class="node"><b>App starts</b><span>isSupported<br>read()</span></div>
+        <div class="arrow">→</div>
+        <div class="node warn"><b>Before login</b><span>getDeviceSecret()</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>Login worked</b><span>save()</span></div>
+        <div class="arrow">→</div>
+        <div class="node secure"><b>One tap</b><span>setActive(true)</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>Sign out</b><span>setActive(false)</span></div>
+        <div class="arrow">→</div>
+        <div class="node danger"><b>Rejected / forget</b><span>remove() · clear()</span></div>
+      </div>
+    </div>
+
+    <div class="vertical-flow">
+      <div class="vf-row"><div class="vf-time">Sign-in screen</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">isSupported</span>, then <span class="mono">read()</span>.</strong>
+          <p>Hide every sharing control when <span class="mono">isSupported</span> is false. Never promise something the platform cannot do.</p></div></div>
+      <div class="vf-row"><div class="vf-time">User taps "Sign in"</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">getDeviceSecret()</span> first, then your auth API.</strong>
+          <p>Send the secret with the login. Your server puts a hash of it inside the token it returns.</p></div></div>
+      <div class="vf-row"><div class="vf-time">Auth API answered</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">save()</span>.</strong>
+          <p>You fill in the user id, the token and the profile. The package fills in the rest.</p></div></div>
+      <div class="vf-row"><div class="vf-time">User taps a card</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Trade <span class="mono">secret.token</span> + <span class="mono">secret.deviceSecret</span> at your API, then <span class="mono">setActive(true)</span>.</strong>
+          <p>Do not call <span class="mono">save</span> here unless your API gave you a new token.</p></div></div>
+      <div class="vf-row"><div class="vf-time">User signs out</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">setActive(false)</span>.</strong>
+          <p>Not <span class="mono">remove</span>. The card should still be there tomorrow.</p></div></div>
+      <div class="vf-row"><div class="vf-time">Server rejects a token</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">remove(userId)</span>, and show why.</strong>
+          <p>Otherwise the next launch offers the same dead card.</p></div></div>
+      <div class="vf-row"><div class="vf-time">User asks to forget</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">clear()</span>, behind a confirm dialog.</strong>
+          <p>This empties the store for every sibling app. Always user-initiated.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="guide-methods" data-nav="Method reference">
+  <div class="wrap">
+    <div class="eyebrow">03</div>
+    <h2>Method Reference</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:20%">Method</th><th style="width:30%">Purpose</th><th style="width:32%">Call it when</th><th style="width:18%">Fails how</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>isSupported</code><br><span class="mono" style="color:var(--soft)">bool</span></td>
+            <td>Can this platform share at all? True on iOS and Android only.</td>
+            <td>Before you draw any sharing UI.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>getDeviceSecret()</code><br><span class="mono" style="color:var(--soft)">Future&lt;String&gt;</span></td>
+            <td>The 64-character value that ties a token to this phone. Same answer every time.</td>
+            <td><strong>Before</strong> you call your auth API. Send it with the login.</td>
+            <td class="must">Throws</td>
+          </tr>
+          <tr>
+            <td><code>save(credential)</code><br><span class="mono" style="color:var(--soft)">Future&lt;void&gt;</span></td>
+            <td>Store a sign-in and mark this app as signed in. Adds the device secret, origin and time for you.</td>
+            <td>Right after your auth API returns a token.</td>
+            <td class="must">Throws</td>
+          </tr>
+          <tr>
+            <td><code>read()</code><br><span class="mono" style="color:var(--soft)">Future&lt;List&gt;</span></td>
+            <td>Every saved sign-in this phone knows about, newest first.</td>
+            <td>On the sign-in screen, and on resume if you refresh the list.</td>
+            <td class="ship">Returns []</td>
+          </tr>
+          <tr>
+            <td><code>readOne(userId)</code><br><span class="mono" style="color:var(--soft)">Future&lt;…?&gt;</span></td>
+            <td>One account by id. Convenience over <code>read</code>.</td>
+            <td>When you already know which account you want.</td>
+            <td class="ship">Returns null</td>
+          </tr>
+          <tr>
+            <td><code>setActive(userId, isActive)</code><br><span class="mono" style="color:var(--soft)">Future&lt;void&gt;</span></td>
+            <td>Record whether <em>this</em> app currently holds a session. Never touches the sibling's flag.</td>
+            <td>True after a one-tap sign-in. False on sign-out.</td>
+            <td class="must">Throws</td>
+          </tr>
+          <tr>
+            <td><code>remove(userId)</code><br><span class="mono" style="color:var(--soft)">Future&lt;void&gt;</span></td>
+            <td>Drop one account everywhere, including every sibling's copy.</td>
+            <td>The server rejected the token, or the user removed that account.</td>
+            <td class="must">Throws</td>
+          </tr>
+          <tr>
+            <td><code>clear()</code><br><span class="mono" style="color:var(--soft)">Future&lt;void&gt;</span></td>
+            <td>Empty the store on this phone, for every sibling app.</td>
+            <td>Only when the user asks. Put a confirm dialog in front of it.</td>
+            <td class="must">Throws</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid3">
+      <div class="card top-green"><div class="kicker">Read</div><h3>Safe to call anywhere</h3>
+        <p><code>read</code> and <code>readOne</code> never throw and never hang. Worst case is an empty list.</p></div>
+      <div class="card top-red"><div class="kicker">Write</div><h3>Wrap in try / catch</h3>
+        <p>Every write throws <code>SsoException</code>. Catching and logging is a fine response — a failed write only costs the card.</p></div>
+      <div class="card top-blue"><div class="kicker">Shortcut</div><h3>No store needed</h3>
+        <p><code>SsoDeviceSecret.shared.getDeviceSecret()</code> works from anywhere. Same cache as the store.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="guide-code" data-nav="The code" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">04</div>
+    <h2>The Code, in Order</h2>
+    <div class="bar"></div>
+
+    <div class="filename">1 · sign-in screen — offer what is saved</div>
+<pre><span class="b">if</span> (!store.isSupported) <span class="b">return</span> [];        <span class="m">// hide the sharing UI</span>
+
+<span class="b">final</span> saved = <span class="b">await</span> store.<span class="o">read</span>();
+<span class="b">for</span> (<span class="b">final</span> c <span class="b">in</span> saved) {
+  <span class="b">if</span> (!c.isUsable) <span class="b">continue</span>;               <span class="m">// half a credential is none</span>
+  <span class="o">showCard</span>(
+    name:       c.profile.name,          <span class="m">// safe to draw</span>
+    from:       c.origin,                <span class="m">// "saved by xyz"</span>
+    activeHere: c.<span class="o">isActiveIn</span>(<span class="g">'abc'</span>),     <span class="m">// already signed in here?</span>
+  );
+}</pre>
+
+    <div class="filename">2 · password login — secret BEFORE the API call</div>
+<pre><span class="b">final</span> deviceSecret = <span class="b">await</span> store.<span class="o">getDeviceSecret</span>();
+<span class="b">final</span> result = <span class="b">await</span> api.<span class="o">login</span>(email, password, deviceSecret: deviceSecret);
+
+<span class="b">await</span> store.<span class="o">save</span>(<span class="y">SsoCredential</span>(
+  userId:  result.userId,
+  secret:  <span class="y">SsoSecret</span>(token: result.idToken),
+  profile: <span class="y">SsoProfile</span>(name: result.name, email: result.email),
+));</pre>
+
+    <div class="filename">3 · one-tap — trade the saved proof</div>
+<pre><span class="b">final</span> session = <span class="b">await</span> api.<span class="o">exchange</span>(
+  idToken:      card.secret.token,
+  deviceSecret: card.secret.deviceSecret,   <span class="m">// filled in by save()</span>
+);
+<span class="b">await</span> store.<span class="o">setActive</span>(userId: card.userId, isActive: <span class="o">true</span>);</pre>
+
+    <div class="filename">4 · sign out, reject, forget</div>
+<pre><span class="b">await</span> store.<span class="o">setActive</span>(userId: id, isActive: <span class="o">false</span>);  <span class="m">// keeps the card</span>
+<span class="b">await</span> store.<span class="o">remove</span>(id);                              <span class="m">// server said no</span>
+<span class="b">await</span> store.<span class="o">clear</span>();                                <span class="m">// user said no</span></pre>
+
+    <div class="callout red">
+      <p><strong>The one ordering rule.</strong> <code>getDeviceSecret()</code> must run <em>before</em> your auth
+        API call. A secret made after the token exists cannot be tied to it, and the sibling app's exchange will
+        fail.</p>
+    </div>
+  </div>
+</section>
+
+<section id="guide-types" data-nav="Types">
+  <div class="wrap">
+    <div class="eyebrow">05</div>
+    <h2>Types</h2>
+    <div class="bar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Holds</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td><code>SsoCredential</code></td><td>userId, secret, profile, activeIn, origin, issuedAt.</td><td>You set the first three. The package sets the rest.</td></tr>
+          <tr><td><code>SsoSecret</code></td><td><code>token</code> and <code>deviceSecret</code>.</td><td class="must">Never log it, never put it in a widget.</td></tr>
+          <tr><td><code>SsoProfile</code></td><td><code>name</code>, <code>email</code>, <code>avatarUrl</code>.</td><td class="ship">Safe to draw and log. Only <code>name</code> is required.</td></tr>
+          <tr><td><code>SsoConfig</code></td><td>appId, group, service, key, timeouts.</td><td>Both apps must share service and key. Only <code>appId</code> differs.</td></tr>
+          <tr><td><code>SsoException</code></td><td><code>code</code>, <code>message</code>, <code>isRetryable</code>.</td><td>Retry when <code>isRetryable</code>. Never sign the user out on it.</td></tr>
+          <tr><td><code>SsoLog</code></td><td>One tag: <code>sso</code>.</td><td>Set <code>SsoLog.sink</code> to forward to Crashlytics or Sentry.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout blue">
+      <p><code>isUsable</code> is true only when both halves of the secret are present. Skip any card where it is
+        false — half a credential cannot be traded.</p>
+    </div>
+  </div>
+</section>
+
+<section id="guide-channel" data-nav="Channel" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">06</div>
+    <h2>What Goes Over the Channel</h2>
+    <div class="bar"></div>
+
+    <p>You never call these. They are here so a log line makes sense.
+      Channel name: <code>flutter_sso/keychain</code>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Native method</th><th>Purpose</th><th>iOS</th><th>Android</th></tr></thead>
+        <tbody>
+          <tr><td><code>read</code></td><td>Get this app's record.</td><td class="ship">yes</td><td class="ship">yes</td></tr>
+          <tr><td><code>write</code></td><td>Save this app's record.</td><td class="ship">yes</td><td class="ship">yes</td></tr>
+          <tr><td><code>delete</code></td><td>Drop this app's record.</td><td class="ship">yes</td><td class="ship">yes</td></tr>
+          <tr><td><code>infoValue</code></td><td>Read the access group out of Info.plist.</td><td class="ship">yes</td><td>—</td></tr>
+          <tr><td><code>deviceId</code></td><td>Return the raw <code>ANDROID_ID</code> for Dart to hash.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>readInbox</code></td><td>Read what siblings already pushed. No IPC.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>pushToPeers</code></td><td>Hand our record to every trusted sibling.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>pullPeers</code></td><td>Ask every sibling once, when we know nothing.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>removeLocalCopies</code></td><td>Drop one account from our record and all our slots.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>removePeers</code></td><td>Ask every sibling to drop one account.</td><td>—</td><td class="ship">yes</td></tr>
+          <tr><td><code>clearPeers</code></td><td>Ask every sibling to drop everything.</td><td>—</td><td class="ship">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p>The seven Android-only methods return straight away on iOS. Dart calls them either way and they cost
+        nothing there, so no code above <code>SsoKeychain</code> has a platform check in it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="guide-check" data-nav="Checklist">
+  <div class="wrap">
+    <div class="eyebrow">07</div>
+    <h2>Before You Ship</h2>
+    <div class="bar"></div>
+
+    <div class="test"><div class="gate">01</div><div><strong>Order.</strong> <code>getDeviceSecret()</code> runs before the auth API call, on both apps.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">02</div><div><strong>iOS group.</strong> The <code>group:</code> log line shows the full resolved string on a real device, in a release build.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">03</div><div><strong>Android trust.</strong> Release builds list both apps' SHA-256 app-signing digests, not <code>self</code>, not the upload key.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">04</div><div><strong>Late install.</strong> Sign in on app A, then install app B and cold-launch it. This is the only IPC path.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">05</div><div><strong>Sign-out sticks.</strong> Sign out of B, relaunch B: card shows, session does not come back.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">06</div><div><strong>Removal sticks.</strong> Reject a token, then relaunch both apps. The dead card must not return.</div><div class="pass">REQUIRED</div></div>
+    <div class="test"><div class="gate">07</div><div><strong>Nothing leaks.</strong> Grep the logs for the token and the secret. You should only ever see sizes.</div><div class="fail">BLOCK IF FAIL</div></div>
+    <div class="test"><div class="gate">08</div><div><strong>Fallback.</strong> Break the group or the digest on purpose. The plain sign-in form must still work.</div><div class="fail">BLOCK IF FAIL</div></div>
+
+    <h3>Watch after release</h3>
+    <div class="badges">
+      <span class="badge green">read success rate by OS version</span>
+      <span class="badge green">card shown → tapped → session</span>
+      <span class="badge blue">read timeout rate</span>
+      <span class="badge orange">untrusted signer refusals</span>
+      <span class="badge red">-34018 / -25308 rate</span>
+      <span class="badge red">save failures</span>
+    </div>
+
+    <div class="nextdoc">
+      <a href="#overview"><div class="kicker">Doc 01</div><b>Overview</b><span>What it is and how it works.</span></a>
+      <a href="#ios"><div class="kicker">Doc 02</div><b>Inside iOS</b><span>The keychain access group.</span></a>
+      <a href="#android"><div class="kicker">Doc 03</div><b>Inside Android</b><span>The signature-checked door.</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>flutter_sso · Engineering Docs</b><br>
+    <a href="#overview">01 · Overview</a> ·
+    <a href="#ios">02 · iOS</a> ·
+    <a href="#android">03 · Android</a> ·
+    <a href="#guide">04 · Implementation</a><br>
+    Share an identity proof bound to this phone. Never another app's live session.
+  </div>
+</footer>
+
+<script>
+(function () {
+  var docs = [].slice.call(document.querySelectorAll('.doc'));
+  var tabs = [].slice.call(document.querySelectorAll('nav .doc-tab'));
+  var subnav = document.getElementById('subnav');
+  var keys = docs.map(function (d) { return d.dataset.key; });
+  var current = null;
+
+  function show(key) {
+    if (keys.indexOf(key) < 0) key = keys[0];
+    if (key === current) return;
+    current = key;
+
+    docs.forEach(function (d) { d.classList.toggle('on', d.dataset.key === key); });
+    tabs.forEach(function (t) {
+      t.setAttribute('aria-current', t.dataset.key === key ? 'page' : 'false');
+    });
+
+    subnav.textContent = '';
+    document.querySelector('.doc.on').querySelectorAll('section[data-nav]').forEach(function (s) {
+      var a = document.createElement('a');
+      a.href = '#' + s.id;
+      a.textContent = s.dataset.nav;
+      subnav.appendChild(a);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function fromHash() {
+    var h = (location.hash || '').replace('#', '');
+    if (!h) return show(keys[0]);
+    if (keys.indexOf(h) >= 0) return show(h);
+
+    // A shared link may point at a section. Open the doc that owns it, then scroll.
+    var el = document.getElementById(h);
+    var owner = el && el.closest ? el.closest('.doc') : null;
+    if (!owner) return show(keys[0]);
+    show(owner.dataset.key);
+    // The doc was display:none a moment ago, so wait for layout before scrolling.
+    requestAnimationFrame(function () { el.scrollIntoView(); });
+  }
+
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+
+</body>
+</html>
