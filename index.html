@@ -159,10 +159,6 @@
   ul.clean li{padding:9px 0 9px 22px;border-bottom:1px solid var(--line);position:relative;color:var(--muted)}
   ul.clean li:last-child{border-bottom:none}
   ul.clean li::before{content:"→";position:absolute;left:0;color:var(--orange);font-weight:800}
-  .invariant{
-    padding:17px 18px;background:#111;color:#fff;border-left:5px solid var(--yellow);margin:7px 0;
-  }
-  .invariant b{color:var(--yellow)}
   .test{
     display:grid;grid-template-columns:110px 1fr 160px;gap:0;border:1px solid var(--line);border-bottom:0;
   }
@@ -823,29 +819,9 @@
   </div>
 </section>
 
-<section id="overview-rules" data-nav="Rules">
+<section id="overview-split" data-nav="iOS vs Android">
   <div class="wrap">
     <div class="eyebrow">07</div>
-    <h2>Six Rules It Never Breaks</h2>
-    <div class="bar"></div>
-    <div class="grid2">
-      <div>
-        <div class="invariant"><b>1</b> No access or refresh token in the record. Each app trades for its own session.</div>
-        <div class="invariant"><b>2</b> The proof is useless on another phone.</div>
-        <div class="invariant"><b>3</b> <span class="mono">read()</span> never throws and never hangs.</div>
-      </div>
-      <div>
-        <div class="invariant"><b>4</b> An unknown schema is skipped and left alone.</div>
-        <div class="invariant"><b>5</b> Nothing company-specific is inside the package. It all comes from <span class="mono">SsoConfig</span>.</div>
-        <div class="invariant"><b>6</b> One app never edits another app's session state.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="overview-split" data-nav="iOS vs Android" class="alt">
-  <div class="wrap">
-    <div class="eyebrow">08</div>
     <h2>iOS vs Android</h2>
     <div class="bar"></div>
 
