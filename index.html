@@ -62,6 +62,9 @@
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:26px}
   .chip{background:#111;color:#fff;padding:8px 12px;font-size:12px;font-weight:700}
   .chip b{color:var(--yellow)}
+  a.chip{text-decoration:none;color:#fff;border-bottom:2px solid var(--yellow)}
+  a.chip:hover{background:var(--yellow);color:#111}
+  a.chip:hover b{color:#111}
   section{padding:70px 0;border-bottom:1px solid var(--line)}
   section.alt{background:var(--surface)}
   h2{font-size:clamp(1.55rem,3vw,2.35rem);letter-spacing:-.025em;line-height:1.16;margin:0 0 10px}
@@ -860,6 +863,7 @@
       <div class="chip"><b>File</b> ios/Classes/FlutterSsoPlugin.swift</div>
       <div class="chip"><b>Methods</b> read · write · delete · infoValue</div>
       <div class="chip"><b>Min</b> iOS 12</div>
+      <a class="chip" href="https://github.com/kurbanalim-webelight/flutter-sso/blob/main/IOS_MECHANISM.md" target="_blank" rel="noopener"><b>Deep dive</b> IOS_MECHANISM.md ↗</a>
     </div>
   </div>
 </header>
@@ -1151,6 +1155,7 @@
       <div class="chip"><b>Package</b> com.flutter_sso · 6 files</div>
       <div class="chip"><b>At rest</b> AES-256/GCM · Keystore</div>
       <div class="chip"><b>minSdk</b> 23</div>
+      <a class="chip" href="https://github.com/kurbanalim-webelight/flutter-sso/blob/main/ANDROID_MECHANISM.md" target="_blank" rel="noopener"><b>Deep dive</b> ANDROID_MECHANISM.md ↗</a>
     </div>
   </div>
 </header>
@@ -1462,71 +1467,6 @@ manifestPlaceholders[<span class="g">"ssoTrustedSigners"</span>] = <span class="
         <div class="vf-body"><strong>Own file plus every slot, decrypted.</strong><p>No IPC. The answers were filed at step 4.</p></div></div>
       <div class="vf-row"><div class="vf-time">7 · Dart</div><div class="vf-arrow">→</div>
         <div class="vf-body"><strong>Merged: one entry per user, newest wins.</strong><p>That rule lives in Dart only, so it cannot drift.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<section id="android-errors" data-nav="Errors">
-  <div class="wrap">
-    <div class="eyebrow">07</div>
-    <h2>Errors</h2>
-    <div class="bar"></div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>What Dart sees</th><th>What happened</th><th>Result</th></tr></thead>
-        <tbody>
-          <tr><td><span class="mono">nothing at all</span></td><td>Door refused us, or is not installed, or is invisible.</td><td>One less card. Logged as <code>not a trusted signer</code>.</td></tr>
-          <tr><td><code>GeneralSecurityException</code></td><td>Keystore key gone, or the value is damaged.</td><td>Entry deleted. Never reaches Dart as an error.</td></tr>
-          <tr><td><code>bad_arguments</code></td><td>A required argument was missing. A code bug.</td><td>Throws.</td></tr>
-          <tr><td><code>device_secret_unavailable</code></td><td><code>ANDROID_ID</code> came back empty.</td><td>Throws. No fake value.</td></tr>
-          <tr><td><code>unrecognised_record</code></td><td>Not schema <code>v3</code>.</td><td>Skipped and left alone.</td></tr>
-          <tr><td><span class="mono">TimeoutException</span></td><td>900 ms local, or 1500 ms for peers.</td><td>Degrades. Never abandons the read.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout green">
-      <p><strong>Read the <code>peers:</code> log line.</strong> <em>1 door, 0 records</em> = the sibling has nothing
-        saved yet. <em>0 doors</em> = not installed, not visible, or not trusted — and signing in over there will
-        never help.</p>
-    </div>
-  </div>
-</section>
-
-<section id="android-traps" data-nav="Traps" class="alt">
-  <div class="wrap">
-    <div class="eyebrow">08</div>
-    <h2>Four Traps in a Build That Compiles</h2>
-    <div class="bar"></div>
-
-    <div class="test"><div class="gate">AND-01</div><div><strong>No <code>&lt;queries&gt;</code>, no siblings.</strong> On API 30+ they are simply invisible.</div><div class="fail">SILENT · 0 DOORS</div></div>
-    <div class="test"><div class="gate">AND-02</div><div><strong><code>self</code> is a lie on Play.</strong> Add both SHA-256 digests, in both apps, before release.</div><div class="fail">DEBUG ONLY</div></div>
-    <div class="test"><div class="gate">AND-03</div><div><strong>Upload key ≠ signing key.</strong> Play re-signs. Allowlist the app signing key certificate.</div><div class="fail">ALL REFUSED</div></div>
-    <div class="test"><div class="gate">AND-04</div><div><strong><code>Binder.getCallingUid()</code> fails open.</strong> Off the binder thread it returns <em>your own</em> id. Use <code>callingPackage</code>.</div><div class="fail">GATE OPENS</div></div>
-  </div>
-</section>
-
-<section id="android-compare" data-nav="iOS vs Android">
-  <div class="wrap">
-    <div class="eyebrow">09</div>
-    <h2>Same Four Calls. Nothing Else Is the Same.</h2>
-    <div class="bar"></div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th></th><th>iOS</th><th>Android</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Where it lives</strong></td><td>One item outside every app.</td><td>One encrypted file inside each app.</td></tr>
-          <tr><td><strong>Who allows it</strong></td><td>The OS, at build time.</td><td>Our Kotlin, on every call.</td></tr>
-          <tr><td><strong>How it is shared</strong></td><td>Both apps open the same item.</td><td>Pushed on write. Asked once if empty.</td></tr>
-          <tr><td><strong>Read cost</strong></td><td>~2 ms. 400 ms budget.</td><td>One decrypt per file. 900 ms budget.</td></tr>
-          <tr><td><strong>Removal</strong></td><td>Delete one item.</td><td>Own file, all slots, then every sibling.</td></tr>
-          <tr><td><strong>Extra methods</strong></td><td>none</td><td><code>deviceId</code> <code>readInbox</code> <code>pushToPeers</code> <code>pullPeers</code> <code>removeLocalCopies</code> <code>removePeers</code> <code>clearPeers</code></td></tr>
-          <tr><td><strong>Silent failure</strong></td><td>One wrong character in the group.</td><td>Missing <code>&lt;queries&gt;</code>, or the wrong digest.</td></tr>
-          <tr><td><strong>Your Dart code</strong></td><td colspan="2"><span class="ship">Exactly the same on both.</span></td></tr>
-        </tbody>
-      </table>
     </div>
 
     <div class="nextdoc">
