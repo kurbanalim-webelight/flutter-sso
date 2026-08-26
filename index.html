@@ -976,9 +976,53 @@
   </div>
 </section>
 
-<section id="ios-map" data-nav="The Swift file" class="alt">
+<section id="ios-why" data-nav="Why a keychain" class="alt">
   <div class="wrap">
     <div class="eyebrow">02</div>
+    <h2>Nothing Is Shared Until Apple Says So</h2>
+    <div class="bar"></div>
+
+    <p>A phone keeps apps apart on purpose. Your app cannot open another app's files. That rule is what stops a
+      bad app reading your users' data — and it is also what stops <strong>your own two apps</strong> sharing a
+      sign-in. So we do not use files.</p>
+
+    <div class="grid3">
+      <div class="card top-red"><div class="kicker">The rule</div><h3>The sandbox</h3>
+        <p>No app reads another app's storage. There is no path, no permission, no API to ask for one.</p></div>
+      <div class="card top-blue"><div class="kicker">The exception</div><h3>A keychain access group</h3>
+        <p>A part of the keychain more than one of your apps may open. Sharing <em>is</em> the storage. No message
+          passes between the apps.</p></div>
+      <div class="card top-green"><div class="kicker">The proof</div><h3>Your Team ID</h3>
+        <p>The group name must start with your Apple Team ID, and Apple only signs a name starting with
+          <strong>your</strong> Team ID. Another company cannot get that signature.</p></div>
+    </div>
+
+    <div class="callout blue">
+      <p>On iOS, "same developer" means exactly one thing: <strong>same Apple Team ID</strong>. This is also why the
+        package never looks for your sibling app. It cannot, and it does not try. There is nothing to look for —
+        both apps just open the same item.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Apple concept</th><th>In plain words</th><th>What we use it for</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Keychain</strong></td><td>The built-in encrypted store for small secrets.</td><td>Where the record lives.</td></tr>
+          <tr><td><strong>Access group</strong></td><td>A partition more than one of your apps may open.</td><td>This <em>is</em> the sharing.</td></tr>
+          <tr><td><strong>Entitlements</strong></td><td>A list of what Apple allows, signed into the binary.</td><td>Proof the app may open that group.</td></tr>
+          <tr><td><strong>Team ID</strong></td><td>The id of your Apple developer account.</td><td>The prefix Apple refuses to sign for anyone else.</td></tr>
+          <tr><td><strong>Generic password</strong></td><td>The simplest kind of keychain item.</td><td>Our one record.</td></tr>
+          <tr><td><code>Info.plist</code></td><td>A settings file the app can read while running.</td><td>How Dart learns the resolved group name.</td></tr>
+          <tr><td><code>OSStatus</code></td><td>Apple's error numbers.</td><td>Tells "try again" apart from "you set it up wrong".</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="ios-map" data-nav="The Swift file">
+  <div class="wrap">
+    <div class="eyebrow">03</div>
     <h2>The Whole Swift File</h2>
     <div class="bar"></div>
 
@@ -1015,9 +1059,9 @@
   </div>
 </section>
 
-<section id="ios-group" data-nav="The group name">
+<section id="ios-group" data-nav="The group name" class="alt">
   <div class="wrap">
-    <div class="eyebrow">03</div>
+    <div class="eyebrow">04</div>
     <h2>Naming the Group</h2>
     <div class="bar"></div>
 
@@ -1049,9 +1093,191 @@
   </div>
 </section>
 
-<section id="ios-seq" data-nav="Step by step" class="alt">
+<section id="ios-match" data-nav="Six attributes">
   <div class="wrap">
-    <div class="eyebrow">04</div>
+    <div class="eyebrow">05</div>
+    <h2>Six Attributes, Byte for Byte</h2>
+    <div class="bar"></div>
+
+    <p>The keychain has no folders and no file names. You never open an item by path — you <em>describe</em> it, and
+      the keychain hands back the one that matches. So both apps have to describe it in exactly the same way, or
+      each one quietly gets its own private item and nothing is ever shared.</p>
+
+    <p>Every call sends these six. All six are part of the match.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Attribute</th><th>Value</th><th>Where it comes from</th></tr></thead>
+        <tbody>
+          <tr><td><code>kSecClass</code></td><td><code>kSecClassGenericPassword</code></td><td>Fixed in the Swift.</td></tr>
+          <tr><td><code>kSecAttrService</code></td><td><code>flutter_sso</code></td><td><code>SsoConfig.keychainService</code></td></tr>
+          <tr><td><code>kSecAttrAccount</code></td><td><code>sso_credentials</code></td><td><code>SsoConfig.recordKey</code></td></tr>
+          <tr><td><code>kSecAttrAccessGroup</code></td><td><code>7X8V5X448H.com.example.sso.shared</code></td><td>Info.plist, or <code>SsoConfig.sharedAccessGroup</code>.</td></tr>
+          <tr><td><code>kSecAttrAccessible</code></td><td><code>…AfterFirstUnlockThisDeviceOnly</code></td><td>Fixed in the Swift. See <a href="#ios-flags">the two flags</a>.</td></tr>
+          <tr><td><code>kSecAttrSynchronizable</code></td><td><code>false</code></td><td>Fixed in the Swift.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout red">
+      <p><strong>Three of the six are hardcoded, and that is the point.</strong> A value in a config file is a value
+        two teams can set differently. The three that would fail silently are not offered as settings at all.</p>
+    </div>
+
+    <p>Nothing about your organisation appears in the Swift. The service and group are <em>always</em> passed in
+      from Dart, which is why two companies can use the package on one phone without ever seeing each other's
+      records.</p>
+  </div>
+</section>
+
+<section id="ios-save" data-nav="Writing safely" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">06</div>
+    <h2>A Save Reads First</h2>
+    <div class="bar"></div>
+
+    <p>There is exactly <strong>one</strong> item, and a write replaces all of it. That makes a careless save
+      destructive in two ways at once.</p>
+
+    <div class="grid2">
+      <div class="card top-red"><div class="kicker">Loss 1</div><h3>The other person</h3>
+        <p>Shared phones are normal. A save that kept only the account being signed in would silently wipe the
+          first person's saved sign-in.</p></div>
+      <div class="card top-red"><div class="kicker">Loss 2</div><h3>The other app</h3>
+        <p>The sibling has already written itself into <code>active_in</code>. Overwrite that and it believes it is
+          signed out, on its next launch, for no reason it can see.</p></div>
+    </div>
+
+    <div class="vertical-flow">
+      <div class="vf-row"><div class="vf-time">1 · SsoStore</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Read what is there now.</strong>
+          <p>Before writing anything. A save is never a blind write.</p></div></div>
+      <div class="vf-row"><div class="vf-time">2 · SsoStore</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong>Merge, do not replace.</strong>
+          <p>Keep every other account. Keep the sibling's <code>active_in</code>. Keep the original
+            <code>issuedAt</code> of untouched entries.</p></div></div>
+      <div class="vf-row"><div class="vf-time">3 · Swift</div><div class="vf-arrow">→</div>
+        <div class="vf-body"><strong><span class="mono">SecItemUpdate</span>, then <span class="mono">SecItemAdd</span>.</strong>
+          <p>Apple has no save-either-way call, and each one fails in the case the other handles.</p></div></div>
+    </div>
+
+    <div class="filename">FlutterSsoPlugin.swift — write</div>
+<pre><span class="m">// Update first: the item existing is the normal case, so the normal</span>
+<span class="m">// case costs one call. Only the first save on a phone costs two.</span>
+<span class="b">let</span> updateStatus = <span class="y">SecItemUpdate</span>(query, [kSecValueData: data])
+<span class="b">if</span> updateStatus == errSecSuccess { <span class="b">return</span> result(<span class="o">nil</span>) }
+<span class="b">guard</span> updateStatus == errSecItemNotFound <span class="b">else</span> { … }
+
+<span class="b">var</span> insert = query
+insert[kSecValueData] = data
+<span class="y">SecItemAdd</span>(insert, <span class="o">nil</span>)</pre>
+
+    <div class="callout orange">
+      <p><strong>Every call names the group. Always.</strong> Once an app has a
+        <code>keychain-access-groups</code> entitlement, that group becomes the <em>default</em> for any write that
+        does not name one. A write that forgot would quietly move the item into the shared partition. The Swift has
+        no code path that builds a query without the group.</p>
+    </div>
+
+    <div class="callout blue">
+      <p>All of the merging lives in <code>SsoStore</code>, in Dart. The Swift moves text in and out and knows
+        nothing about what the text means — so there is one copy of those rules instead of two that drift.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-flags" data-nav="Two flags">
+  <div class="wrap">
+    <div class="eyebrow">07</div>
+    <h2>Two Flags That Are Not Yours to Change</h2>
+    <div class="bar"></div>
+
+    <div class="grid2">
+      <div>
+        <div class="filename">kSecAttrAccessible</div>
+<pre>kSecAttrAccessible<span class="m">AfterFirstUnlockThisDeviceOnly</span></pre>
+        <p><strong>AfterFirstUnlock</strong> — readable while the screen is locked, so long as the user has unlocked
+          the phone once since it was switched on. Anything stricter and a background refresh can never read the
+          sign-in.</p>
+        <p><strong>ThisDeviceOnly</strong> — never leaves this phone, and never enters an iCloud or iTunes backup.</p>
+        <p>Want Face ID in front of the sign-in? Put it in front of <em>your screen</em>, not on the item.</p>
+      </div>
+      <div>
+        <div class="filename">kSecAttrSynchronizable</div>
+<pre>kSecAttrSynchronizable: <span class="o">false</span></pre>
+        <p>The keychain can sync items through iCloud. Right for passwords. Wrong here.</p>
+        <p>The record describes <em>this phone</em> — which apps hold a session, and what this device's secret is.
+          Copy it to an iPad and every one of those statements is false.</p>
+        <p>There is a second reason: a shared access group combined with syncing is not a supported combination, and
+          it fails in confusing ways.</p>
+      </div>
+    </div>
+
+    <div class="callout red">
+      <p><strong>The trap that costs a day.</strong> <code>kSecAttrAccessible</code> is also used as a
+        <em>filter on reads</em>. If two apps disagree about it, every read finds nothing — while the group, the
+        service and the account all look perfectly correct, and <strong>no error is raised</strong>. That is why it
+        is fixed in code rather than exposed as a setting.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ios-errors" data-nav="Errors" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">08</div>
+    <h2>A Real Error and a Bad Moment Look the Same</h2>
+    <div class="bar"></div>
+
+    <p>Some keychain failures mean <strong>you set it up wrong</strong>. Others mean <strong>you asked at a bad
+      moment</strong> and the same call works a second later. An app that cannot tell them apart does the worst
+      thing available: it reads a bad moment as "signed out" and throws the session away.</p>
+
+    <p>So the <code>OSStatus</code> travels to Dart unchanged, as the error code.</p>
+
+    <div class="filename">FlutterSsoPlugin.swift — error</div>
+<pre><span class="b">private static func</span> <span class="y">error</span>(_ status: OSStatus, _ operation: String) -&gt; FlutterError {
+  <span class="b">let</span> message = SecCopyErrorMessageString(status, <span class="o">nil</span>) <span class="b">as</span> String? ?? <span class="g">"keychain error"</span>
+  <span class="b">return</span> FlutterError(code: <span class="g">"\(status)"</span>, message: <span class="g">"\(operation): \(message)"</span>, details: <span class="o">nil</span>)
+}</pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Code</th><th>Apple's name</th><th>What it really is</th><th>isRetryable</th></tr></thead>
+        <tbody>
+          <tr><td><code>-34018</code></td><td><code>errSecMissingEntitlement</code></td><td>Wrong or missing group, a half-resolved build value — <em>or</em> a known iOS hiccup at launch.</td><td class="ship">true</td></tr>
+          <tr><td><code>-25308</code></td><td><code>errSecInteractionNotAllowed</code></td><td>Phone locked, or not unlocked since it was switched on.</td><td class="ship">true</td></tr>
+          <tr><td>anything else</td><td></td><td>A real setup mistake.</td><td class="must">false</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout red">
+      <p><strong><code>isRetryable == true</code> must never sign the user out.</strong> Retry, or leave the session
+        exactly as it was. Nothing else.</p>
+    </div>
+
+    <div class="callout green">
+      <p><strong>How to tell them apart yourself:</strong> a setup mistake happens <em>every single time</em>. These
+        two come and go.</p>
+    </div>
+
+    <p>There is one difference we hide on purpose. A read that finds nothing and a read with the wrong group name
+      both come back as <code>nil</code>:</p>
+
+<pre><span class="b">case</span> errSecItemNotFound:
+  <span class="m">// Genuinely empty, or the group name is wrong. Indistinguishable here on</span>
+  <span class="m">// purpose — Dart treats both as "no saved accounts".</span>
+  result(<span class="o">nil</span>)</pre>
+
+    <p>Because the app should do the <strong>same thing</strong> either way: show the normal sign-in screen. Telling
+      them apart would only tempt someone into showing the user an error about something only a developer can
+      fix.</p>
+  </div>
+</section>
+
+<section id="ios-seq" data-nav="Step by step">
+  <div class="wrap">
+    <div class="eyebrow">09</div>
     <h2>One Read, Step by Step</h2>
     <div class="bar"></div>
 
@@ -1060,7 +1286,9 @@
         <div class="vf-body"><strong><span class="mono">SecItemAdd</span> — maybe months ago.</strong>
           <p>XYZ may be uninstalled by now. The item stays.</p></div></div>
       <div class="vf-row"><div class="vf-time">2 · ABC, Dart</div><div class="vf-arrow">→</div>
-        <div class="vf-body"><strong><span class="mono">read()</span> on launch.</strong><p>400 ms limit.</p></div></div>
+        <div class="vf-body"><strong><span class="mono">read()</span> on launch.</strong>
+          <p>400 ms limit — this runs while the user is looking at the launch screen. Over budget, it gives up and
+            returns <code>[]</code>. Generous for one keychain lookup; the limit is for the rare bad case.</p></div></div>
       <div class="vf-row"><div class="vf-time">3 · SsoKeychain</div><div class="vf-arrow">→</div>
         <div class="vf-body"><strong>Builds the arguments.</strong><p>Group resolved once per run, then cached.</p></div></div>
       <div class="vf-row"><div class="vf-time">4 · channel</div><div class="vf-arrow">→</div>
@@ -1075,6 +1303,62 @@
           <p>An empty keychain and a wrong group look the same here. That is the bug you will chase.</p></div></div>
       <div class="vf-row"><div class="vf-time">8 · Dart</div><div class="vf-arrow">→</div>
         <div class="vf-body"><strong>A list of credentials, newest first.</strong><p>A bad entry is dropped on its own.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="ios-lifetime" data-nav="What survives" class="alt">
+  <div class="wrap">
+    <div class="eyebrow">10</div>
+    <h2>Deleted Apps, and Seven Methods That Do Nothing</h2>
+    <div class="bar"></div>
+
+    <div class="grid2">
+      <div>
+        <h3>The item outlives the app that wrote it</h3>
+        <p>Delete XYZ, and ABC keeps working with the sign-in XYZ saved. iOS does this on its own — nothing in the
+          package is involved.</p>
+        <p>This is the one place iOS is simpler than Android, where the door disappears with the app and the
+          package has to keep copies to soften the loss.</p>
+        <div class="callout orange">
+          <p>Because it survives, it also survives a <strong>reinstall</strong>. If deleting the app should forget
+            the account, give the user a <em>Remove all saved sign-ins</em> button and call <code>clear()</code> —
+            iOS gives you no way to run code when your app is deleted.</p>
+        </div>
+      </div>
+      <div>
+        <h3>The Android methods return immediately</h3>
+        <p><code>SsoStore</code> calls all seven on both platforms. On iOS each one returns before it reaches the
+          channel.</p>
+<pre><span class="b">Future</span>&lt;<span class="b">List</span>&lt;String&gt;&gt; <span class="y">readInbox</span>() <span class="b">async</span> {
+  <span class="b">if</span> (!Platform.isAndroid) <span class="b">return const</span> [];
+  …
+}</pre>
+        <p>They exist because on Android every app keeps its <em>own</em> copy, so copies must be pushed, collected
+          and removed in step. On iOS the sibling writes <strong>the very item <code>read()</code> returns</strong>.
+          There is no second copy. Nothing to collect. Nothing to keep in step.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>On Android</th><th>On iOS</th></tr></thead>
+        <tbody>
+          <tr><td><code>deviceId</code></td><td><code>ANDROID_ID</code></td><td>Not called — <code>identifierForVendor</code> comes from Dart.</td></tr>
+          <tr><td><code>readInbox</code></td><td>Reads slots other apps pushed.</td><td>Returns <code>[]</code>.</td></tr>
+          <tr><td><code>pushToPeers</code></td><td>Sends the record to every trusted sibling.</td><td>Returns.</td></tr>
+          <tr><td><code>pullPeers</code></td><td>Asks each sibling once, if empty.</td><td>Returns <code>0</code>.</td></tr>
+          <tr><td><code>removeLocalCopies</code></td><td>Clears this app's own slots.</td><td>Returns.</td></tr>
+          <tr><td><code>removePeers</code></td><td>Tells every sibling to drop one user.</td><td>Returns.</td></tr>
+          <tr><td><code>clearPeers</code></td><td>Tells every sibling to drop everything.</td><td>Returns.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout blue">
+      <p>Four calls, one channel — <code>flutter_sso/keychain</code> — and 157 lines of Swift with no state of its
+        own. Every rule about what the record <em>means</em> lives in Dart, so both platforms share exactly one
+        copy of it.</p>
     </div>
 
     <div class="nextdoc">
