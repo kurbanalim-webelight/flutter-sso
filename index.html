@@ -1015,42 +1015,9 @@
   </div>
 </section>
 
-<section id="ios-query" data-nav="The query">
+<section id="ios-group" data-nav="The group name">
   <div class="wrap">
     <div class="eyebrow">03</div>
-    <h2>Six Attributes That Must Match</h2>
-    <div class="bar"></div>
-
-<pre><span class="b">var</span> query: [String: <span class="y">Any</span>] {
-  [
-    kSecClass              : <span class="o">kSecClassGenericPassword</span>,
-    kSecAttrService        : service,   <span class="m">// "flutter_sso"</span>
-    kSecAttrAccount        : key,       <span class="m">// "sso_credentials"</span>
-    kSecAttrAccessGroup    : group,     <span class="m">// "&lt;TeamID&gt;.com.example.sso.shared"</span>
-    kSecAttrAccessible     : <span class="r">kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly</span>,
-    kSecAttrSynchronizable : <span class="o">false</span>,
-  ]
-}</pre>
-
-    <div class="grid2">
-      <div class="card top-blue"><div class="kicker">kSecAttrAccessible</div><h3>After first unlock, this device</h3>
-        <p>Works with the screen off, so background code can read it. Never goes into a backup. Use
-          <code>WhenUnlocked</code> instead and a locked phone returns <code>-25308</code>.</p></div>
-      <div class="card top-purple"><div class="kicker">kSecAttrSynchronizable</div><h3>false</h3>
-        <p>The record describes <em>this</em> phone. On an iPad the secret would be different, so every card there
-          would be dead. Group + sync is also illegal.</p></div>
-    </div>
-
-    <div class="callout orange">
-      <p><code>kSecAttrAccessible</code> also filters reads. If the sibling app used a different one you get a second,
-        invisible item. No error. Just nothing.</p>
-    </div>
-  </div>
-</section>
-
-<section id="ios-group" data-nav="The group name" class="alt">
-  <div class="wrap">
-    <div class="eyebrow">04</div>
     <h2>Naming the Group</h2>
     <div class="bar"></div>
 
@@ -1082,9 +1049,9 @@
   </div>
 </section>
 
-<section id="ios-seq" data-nav="Step by step">
+<section id="ios-seq" data-nav="Step by step" class="alt">
   <div class="wrap">
-    <div class="eyebrow">05</div>
+    <div class="eyebrow">04</div>
     <h2>One Read, Step by Step</h2>
     <div class="bar"></div>
 
@@ -1112,9 +1079,9 @@
   </div>
 </section>
 
-<section id="ios-errors" data-nav="Errors" class="alt">
+<section id="ios-errors" data-nav="Errors">
   <div class="wrap">
-    <div class="eyebrow">06</div>
+    <div class="eyebrow">05</div>
     <h2>Errors</h2>
     <div class="bar"></div>
 
@@ -1140,9 +1107,9 @@
   </div>
 </section>
 
-<section id="ios-traps" data-nav="Traps">
+<section id="ios-traps" data-nav="Traps" class="alt">
   <div class="wrap">
-    <div class="eyebrow">07</div>
+    <div class="eyebrow">06</div>
     <h2>Four Traps in a Build That Compiles</h2>
     <div class="bar"></div>
 
