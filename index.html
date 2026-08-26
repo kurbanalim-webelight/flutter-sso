@@ -1076,19 +1076,6 @@
       <div class="vf-row"><div class="vf-time">8 · Dart</div><div class="vf-arrow">→</div>
         <div class="vf-body"><strong>A list of credentials, newest first.</strong><p>A bad entry is dropped on its own.</p></div></div>
     </div>
-  </div>
-</section>
-
-<section id="ios-traps" data-nav="Traps">
-  <div class="wrap">
-    <div class="eyebrow">05</div>
-    <h2>Four Traps in a Build That Compiles</h2>
-    <div class="bar"></div>
-
-    <div class="test"><div class="gate">iOS-01</div><div><strong>One character apart.</strong> The entitlement and the Info.plist value must end up identical.</div><div class="fail">-34018 EVERY CALL</div></div>
-    <div class="test"><div class="gate">iOS-02</div><div><strong>Accessibility filters reads.</strong> A mismatch makes a second item you will never see.</div><div class="fail">SILENT</div></div>
-    <div class="test"><div class="gate">iOS-03</div><div><strong>Unqualified writes drift.</strong> With the entitlement present, any keychain write without a group lands in the shared partition.</div><div class="fail">SILENT</div></div>
-    <div class="test"><div class="gate">iOS-04</div><div><strong>Simulator is not a device.</strong> Test release entitlements on real hardware.</div><div class="pass">REQUIRED</div></div>
 
     <div class="nextdoc">
       <a href="#android"><div class="kicker">Doc 03 · Next</div><b>Inside Android</b><span>Everything the OS did for you here, you write yourself there.</span></a>
