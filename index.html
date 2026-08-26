@@ -1079,37 +1079,9 @@
   </div>
 </section>
 
-<section id="ios-errors" data-nav="Errors">
+<section id="ios-traps" data-nav="Traps">
   <div class="wrap">
     <div class="eyebrow">05</div>
-    <h2>Errors</h2>
-    <div class="bar"></div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Code</th><th>What happened</th><th>Retry?</th></tr></thead>
-        <tbody>
-          <tr><td><code>-34018</code></td><td>Wrong or missing group, an unresolved build variable — or a known OS glitch at launch.</td><td class="ship">yes</td></tr>
-          <tr><td><code>-25308</code></td><td>Phone locked, or before the first unlock after a reboot.</td><td class="ship">yes</td></tr>
-          <tr><td><span class="mono">errSecItemNotFound</span></td><td>Nothing saved, or the group name is wrong.</td><td>—</td></tr>
-          <tr><td><code>misconfigured</code></td><td>No group at all. Thrown before any platform call.</td><td>no</td></tr>
-          <tr><td><code>bad_arguments</code></td><td>A required argument was missing. A code bug.</td><td>no</td></tr>
-          <tr><td><code>unrecognised_record</code></td><td>Not schema <code>v3</code>. Skipped and left alone.</td><td>no</td></tr>
-          <tr><td><code>missing_plugin</code></td><td>Stale build.</td><td>no</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout red">
-      <p><strong>Never sign the user out on <code>-34018</code>.</strong> A real setup error fails every time.
-        This one comes and goes. Retry it.</p>
-    </div>
-  </div>
-</section>
-
-<section id="ios-traps" data-nav="Traps" class="alt">
-  <div class="wrap">
-    <div class="eyebrow">06</div>
     <h2>Four Traps in a Build That Compiles</h2>
     <div class="bar"></div>
 
